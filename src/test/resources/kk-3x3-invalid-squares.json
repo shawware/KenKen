@@ -1,0 +1,77 @@
+{
+	"size": 3,
+	"cages": [
+		{
+			"operation": "=",
+			"value": 1,
+			"squares": [
+				{
+					"x": 0,
+					"y": 0
+				},
+				{
+					"x": 0,
+					"y": 1
+				}
+			]
+		},
+		{
+			"operation": "/",
+			"value": 2,
+			"squares": [
+				{
+					"x": 0,
+					"y": 2
+				}
+			]
+		},
+		{
+			"operation": "-",
+			"value": 3,
+			"squares": [
+				{
+					"x": 1,
+					"y": 0
+				},
+				{
+					"x": 1,
+					"y": 1
+				},
+				{
+					"x": 1,
+					"y": 2
+				}
+			]
+		},
+		{
+			"operation": "x",
+			"value": 4,
+			"squares": [
+				{
+					"x": 2,
+					"y": 0
+				}
+			]
+		},
+		{
+			"operation": "x",
+			"value": 5,
+			"squares": [
+				{
+					"x": 2,
+					"y": 1
+				}
+			]
+		},
+		{
+			"operation": "+",
+			"value": 6,
+			"squares": [
+				{
+					"x": 2,
+					"y": 2
+				}
+			]
+		}
+	]
+}

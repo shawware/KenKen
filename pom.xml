@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>sw-kenken</artifactId>
+  <name>Shawware KenKen Solver</name>
+  <description>Shawware KenKen Solver</description>
+  <version>0.1</version>
+  <url>https://github.com/shawware/Util</url>
+  <parent>
+    <groupId>au.com.shawware</groupId>
+    <artifactId>sw-java-pom</artifactId>
+    <version>1.2.0</version>
+  </parent>
+  <scm>
+    <url>https://github.com/shawware/KenKen</url>
+    <connection>scm:git:git://github.com/shawware/KenKen.git</connection>
+    <developerConnection>scm:git:git@github.com:shawware/KenKen.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <repositories>
+    <repository>
+      <id>shawware</id>
+      <name>Shawware Maven Repository</name>
+      <url>http://repo.shawware.com.au/maven2</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>au.com.shawware</groupId>
+    	<artifactId>sw-util</artifactId>
+    	<version>1.2.11</version>
+    </dependency>
+  </dependencies>
+</project>
