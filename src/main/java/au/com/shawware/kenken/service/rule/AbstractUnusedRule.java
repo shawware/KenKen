@@ -60,7 +60,7 @@ abstract class AbstractUnusedRule extends AbstractRule
         boolean change = false;
         for (CageState cageState : cageStates)
         {
-            if (solveCage(cageState))
+            if (!cageState.isSolved() && solveCage(cageState))
             {
                 change = true;
             }
@@ -73,22 +73,7 @@ abstract class AbstractUnusedRule extends AbstractRule
 
     private boolean solveCage(CageState cageState)
     {
-        // Our grid may have been solved by other work, so we check for that first.
-        // TODO: is this true?
-        if (cageState.isSolved())
-        {
-            System.out.format("Called on a pre-solved cage\n");
-            return false;
-        }
-
         List<SquareState> squareStates = cageState.getSquareStates();
-
-        if (couldBeSolved(squareStates))
-        {
-            System.out.format("Found a pre-solved cage\n");
-            return false;
-        }
-
         List<Set<Integer>> unusedValues = findUnusedValues(cageState.getCage(), squareStates);
         boolean change = false;
         for (int i = 0; i < unusedValues.size(); i++)
@@ -97,11 +82,9 @@ abstract class AbstractUnusedRule extends AbstractRule
             if (!unused.isEmpty())
             {
                 change = true;
-                System.out.format("Removing any unused values found: %s\n", unusedValues.get(i));
                 SquareState squareState = squareStates.get(i);
                 if (!squareState.isSolved())
                 {
-                    System.out.format("Removing from %s\n", squareState);
                     squareState.removeValues(unusedValues.get(i));
                     squareState.solve();
                 }
@@ -113,23 +96,6 @@ abstract class AbstractUnusedRule extends AbstractRule
     
     // Package visibility for testing
     abstract List<Set<Integer>> findUnusedValues(Cage cage, List<SquareState> squareState);
-
-    @SuppressWarnings("static-method")
-    private boolean couldBeSolved(List<SquareState> squareStates)
-    {
-        boolean couldBeSolved = true;
-        
-        for (SquareState squareState : squareStates)
-        {
-            if (!squareState.isSolved() && !squareState.couldBeSolved())
-            {
-                couldBeSolved = false;
-                break;
-            }
-        }
-
-        return couldBeSolved;
-    }
 
     @Override
     public String toString()

@@ -31,7 +31,7 @@ abstract class AbstractRule implements ISolvingRule
     }
 
     @Override
-    public String name()
+    public final String name()
     {
         return name;
     }

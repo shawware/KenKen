@@ -51,7 +51,6 @@ public class SinglesRule extends AbstractRule
                 if (!squareState.isSolved() && squareState.couldBeSolved())
                 {
                     change = true;
-                    System.out.format("Found a single value at [%d, %d]: %d\n", x, y, squareState.value());
                     removeFromRow(gridState, x, y);
                     removeFromColumn(gridState, x, y);
                 }
