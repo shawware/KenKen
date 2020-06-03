@@ -12,12 +12,11 @@ package au.com.shawware.kenken.service;
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
-// TODO: rename? as it's the GridSolver that implements this?
 public interface IKenKenSolver
 {
     void solve();
     
-    boolean isSolved();
+    boolean gridIsSolved();
     
     int[][] solution();
 }

@@ -31,8 +31,6 @@ abstract class AbstractPairRule extends AbstractUnusedRule
     private final List<CageState> cageStates;
 
     private boolean initialised;
-    // TODO: do we want to track the solved state of each cage
-//    private boolean solved; 
 
     AbstractPairRule(String name, int gridSize, String operation, List<Cage> cages, Function<Integer, BiFunction<Integer, Integer, Boolean>> operationSupplier)
     {

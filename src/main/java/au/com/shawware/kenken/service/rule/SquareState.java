@@ -75,7 +75,6 @@ class SquareState
     @SuppressWarnings("boxing")
     public boolean couldBeSolved()
     {
-        // TODO: check if solved?
         boolean couldBeSolved = false;
         if (possibleValues.size() == 1)
         {

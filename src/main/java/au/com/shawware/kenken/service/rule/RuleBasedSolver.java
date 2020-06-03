@@ -74,7 +74,7 @@ public class RuleBasedSolver implements IKenKenSolver
         while (change)
         {
             change = applyRules();
-            if (isSolved())
+            if (gridIsSolved())
             {
                 break;
             }
@@ -104,7 +104,7 @@ public class RuleBasedSolver implements IKenKenSolver
     }
 
     @Override
-    public boolean isSolved()
+    public boolean gridIsSolved()
     {
         boolean isSolved = true;
         out:

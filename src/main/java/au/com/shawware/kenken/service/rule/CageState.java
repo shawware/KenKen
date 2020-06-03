@@ -7,9 +7,9 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.util.StringUtil;
@@ -44,21 +44,16 @@ class CageState
         return solved;
     }
 
-    // TODO: used
-    boolean isInitialised()
-    {
-        return initialised;
-    }
-
-    @SuppressWarnings("hiding")
     void initialise(SquareState[][] gridState)
     {
         if (!initialised)
         {
             initialised = true;
-            List<SquareState> squareStates = new ArrayList<>();
-            cage.getSquares().forEach(square -> squareStates.add(gridState[square.getX()][square.getY()]));
-            this.squareStates = Collections.unmodifiableList(squareStates);
+            squareStates = Collections.unmodifiableList(
+                    cage.getSquares().stream()
+                        .map(square -> gridState[square.getX()][square.getY()])
+                        .collect(Collectors.toList())
+            );
         }
     }
 

@@ -73,7 +73,6 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
             }
         }
 
-        // TODO: can we use :: elsewhere?
         exhausted = cageStates.stream().allMatch(CageState::isSolved);
 
         return change;
@@ -93,13 +92,11 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
 
         if (couldBeSolved(squareStates))
         {
-            System.out.format("Found a pre-solved c\n");
+            System.out.format("Found a pre-solved cage\n");
             return false;
         }
 
         List<Set<Integer>> unusedValues = findUnusedValues(cageState.getCage(), squareStates);
-        // TODO: remove assert
-        assert (unusedValues.size() == squareStates.size());
         boolean change = false;
         for (int i = 0; i < unusedValues.size(); i++)
         {
@@ -124,31 +121,24 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
     // Package visibility for testing
     @Override
     @SuppressWarnings("boxing")
-    List<Set<Integer>> findUnusedValues(Cage cage, List<SquareState> squareState)
+    List<Set<Integer>> findUnusedValues(Cage cage, List<SquareState> squareStates)
     {
-        final List<Set<Integer>> unusedValues = new ArrayList<>(squareState.size());
-        for (int i = 0; i < squareState.size(); i++)
+        final List<Set<Integer>> unusedValues = new ArrayList<>(squareStates.size());
+        for (int i = 0; i < squareStates.size(); i++)
         {
             unusedValues.add(new HashSet<>());
         }
 
-        handleTwoOrMoreValues(cage.getValue(), squareState, unusedValues, operationSupplier.apply(cage.getValue()));
+        handleTwoOrMoreValues(cage.getValue(), squareStates, unusedValues, operationSupplier.apply(cage.getValue()));
 
         return unusedValues;
     }
 
     @SuppressWarnings("boxing")
-    private void handleTwoOrMoreValues(int value, List<SquareState> squareState, List<Set<Integer>> unusedValues, BiFunction<Integer, Integer, Integer> operation)
+    private void handleTwoOrMoreValues(int value, List<SquareState> squareStates, List<Set<Integer>> unusedValues, BiFunction<Integer, Integer, Integer> operation)
     {
-        // TODO: skip equal values if linear
+        int numberOfSquares = squareStates.size();
 
-        int numberOfSquares = squareState.size();
-
-        // TODO: do we really to convert the list to an array?
-        SquareState[] solvers = new SquareState[numberOfSquares];
-        squareState.toArray(solvers);
-
-        // TODO: data structure here
         RunningTotal[] runningTotal = new RunningTotal[numberOfSquares];
         for (int i = 0; i < numberOfSquares; i++)
         {
@@ -157,20 +147,20 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
 
         for (int i = 0; i < numberOfSquares; i++)
         {
-            List<SquareState> otherSolvers = new ArrayList<>(numberOfSquares - 1);
+            List<SquareState> otherSquareStates = new ArrayList<>(numberOfSquares - 1);
             Set<Integer> unused = unusedValues.get(i);
             for (int j = 0; j < numberOfSquares; j++)
             {
                 if (j != i)
                 {
-                    otherSolvers.add(solvers[j]);
+                    otherSquareStates.add(squareStates.get(j));
                 }
             }
-            for (Integer initialValue : solvers[i].getValues())
+            SquareState thisSquareState = squareStates.get(i);
+            for (Integer initialValue : thisSquareState.getValues())
             {
-                // TODO: better way to access the square solver?
-                runningTotal[0].initialise(solvers[i].getSquare().getX(), solvers[i].getSquare().getY(), initialValue);
-                if (!findPermutation(value, 0, runningTotal, otherSolvers, operation))
+                runningTotal[0].initialise(thisSquareState.getSquare().getX(), thisSquareState.getSquare().getY(), initialValue);
+                if (!findPermutation(value, 0, runningTotal, otherSquareStates, operation))
                 {
                     unused.add(initialValue);
                 }
@@ -244,19 +234,13 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
     {
         boolean couldBeSolved = true;
         
-        // TODO: this loop can be better
         for (SquareState squareState : squareStates)
         {
-            if (squareState.isSolved())
+            if (!squareState.isSolved() && !squareState.couldBeSolved())
             {
-                continue;
+                couldBeSolved = false;
+                break;
             }
-            if (squareState.couldBeSolved())
-            {
-                continue;
-            }
-            couldBeSolved = false;
-            break;
         }
 
         return couldBeSolved;
