@@ -24,7 +24,7 @@ class TriplesRule extends AbstractPlusRule
 {
     TriplesRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
     {
-        super("Triples", buildCages(cages)); //$NON-NLS-1$
+        super("Triples", buildCages(cages), true); //$NON-NLS-1$
     }
 
     private static List<Cage> buildCages(List<Cage> cages)

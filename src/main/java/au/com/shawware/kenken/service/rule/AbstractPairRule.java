@@ -27,7 +27,7 @@ abstract class AbstractPairRule extends AbstractUnusedRule
 
     AbstractPairRule(String name, String operation, List<Cage> cages, Function<Integer, BiFunction<Integer, Integer, Boolean>> operationSupplier)
     {
-        super(name, operation, cages);
+        super(name, operation, cages, false);
         this.operationSupplier = operationSupplier;
     }
 

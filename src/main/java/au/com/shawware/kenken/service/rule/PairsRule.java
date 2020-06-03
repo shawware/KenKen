@@ -24,7 +24,7 @@ class PairsRule extends AbstractPlusRule
 {
     PairsRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
     {
-        super("Pairs", buildCages(cages)); //$NON-NLS-1$
+        super("Pairs", buildCages(cages), true); //$NON-NLS-1$
     }
 
     private static List<Cage> buildCages(List<Cage> cages)

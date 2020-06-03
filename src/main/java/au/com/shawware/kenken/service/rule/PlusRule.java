@@ -20,6 +20,6 @@ class PlusRule extends AbstractPlusRule
 {
     PlusRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
     {
-        super("Plus", cages); //$NON-NLS-1$
+        super("Plus", cages, true); //$NON-NLS-1$
     }
 }

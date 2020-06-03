@@ -25,22 +25,27 @@ abstract class AbstractUnusedRule extends AbstractRule
 
     private boolean initialised;
 
-    AbstractUnusedRule(String name, String operation, List<Cage> cages)
+    AbstractUnusedRule(String name, String operation, List<Cage> cages, boolean sort)
     {
         super(name);
 
         this.exhausted = cages.isEmpty();
-        this.cageStates = buildCageStates(operation, cages);
+        this.cageStates = buildCageStates(operation, cages, sort);
         this.initialised = false;
     }
 
-    @SuppressWarnings("static-method")
-    private List<CageState> buildCageStates(String operation, List<Cage> cages)
+    @SuppressWarnings({ "static-method", "hiding" })
+    private List<CageState> buildCageStates(String operation, List<Cage> cages, boolean sort)
     {
-        return cages.stream()
+        List<CageState> cageStates = cages.stream()
                 .filter(cage -> cage.getOperation().equals(operation))
                 .map(cage -> new CageState(cage))
                 .collect(Collectors.toList());
+        if (sort)
+        {
+            cageStates.sort((cs1, cs2) -> Integer.compare(cs1.getCage().getSquares().size(), cs2.getCage().getSquares().size()));
+        }
+        return cageStates;
     }
 
     @Override

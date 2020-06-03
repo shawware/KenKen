@@ -26,7 +26,7 @@ class RowRule extends AbstractPlusRule
     // Solve in the rule factory
     RowRule(int gridSize, @SuppressWarnings("unused") List<Cage> cages)
     {
-        super("Row", buildCages(gridSize)); //$NON-NLS-1$
+        super("Row", buildCages(gridSize), false); //$NON-NLS-1$
     }
 
     // TODO: common code within row and column?

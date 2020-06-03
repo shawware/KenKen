@@ -27,6 +27,6 @@ class TimesRule extends AbstractPermutationRule
 
     TimesRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
     {
-        super("Times", TIMES, cages, MULTIPLICATION); //$NON-NLS-1$
+        super("Times", TIMES, cages, true, MULTIPLICATION); //$NON-NLS-1$
     }
 }

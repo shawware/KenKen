@@ -27,7 +27,7 @@ class ColumnRule extends AbstractPlusRule
     // Solve in the rule factory
     ColumnRule(int gridSize, @SuppressWarnings("unused") List<Cage> cages)
     {
-        super("Column", buildCages(gridSize)); //$NON-NLS-1$
+        super("Column", buildCages(gridSize), false); //$NON-NLS-1$
     }
 
     private static List<Cage> buildCages(int gridSize)
