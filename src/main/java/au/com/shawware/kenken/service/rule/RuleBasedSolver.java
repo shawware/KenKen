@@ -25,7 +25,8 @@ public class RuleBasedSolver implements IKenKenSolver
     private final int gridSize;
     private final List<Cage> cages;
     private final SquareState[][] gridState;
-    private final List<ISolvingRule> solvingRules;
+    private final List<ISolvingRule> baseSolvingRules;
+    private final List<ISolvingRule> extraSolvingRules;
     private final ISolvingRule singlesRule;
 
     public RuleBasedSolver(GridSpecification specification)
@@ -33,7 +34,8 @@ public class RuleBasedSolver implements IKenKenSolver
         this.gridSize = specification.getSize();
         this.cages = specification.getCages();
         this.gridState = buildGridState();
-        this.solvingRules = buildSolvingRules();
+        this.baseSolvingRules = buildBaseSolvingRules();
+        this.extraSolvingRules = buildExtraSolvingRules();
         this.singlesRule = new SinglesRule(gridSize, cages);
     }
 
@@ -49,8 +51,7 @@ public class RuleBasedSolver implements IKenKenSolver
         return gridState;
     }
 
-    @SuppressWarnings("hiding")
-    private List<ISolvingRule> buildSolvingRules()
+    private List<ISolvingRule> buildBaseSolvingRules()
     {
         List<ISolvingRule> solvingRules = new ArrayList<>();
         
@@ -61,6 +62,14 @@ public class RuleBasedSolver implements IKenKenSolver
         solvingRules.add(new TimesRule(gridSize, cages));
         solvingRules.add(new RowRule(gridSize, cages));
         solvingRules.add(new ColumnRule(gridSize, cages));
+     
+        return solvingRules;
+    }
+
+    private List<ISolvingRule> buildExtraSolvingRules()
+    {
+        List<ISolvingRule> solvingRules = new ArrayList<>();
+        
         solvingRules.add(new PairsRule(gridSize, cages));
         solvingRules.add(new TriplesRule(gridSize, cages));
      
@@ -70,13 +79,21 @@ public class RuleBasedSolver implements IKenKenSolver
     @Override
     public void solve()
     {
-        boolean change = true;
-        while (change)
+        int maxAttempts = extraSolvingRules.size() + 1;
+        while (maxAttempts > 0)
         {
-            change = applyRules();
+            while (applyRules())
+            {
+                // Keep going until the grid is solved or the rules stop having an effect
+            }
             if (gridIsSolved())
             {
                 break;
+            }
+            maxAttempts--;
+            if (!extraSolvingRules.isEmpty())
+            {
+                baseSolvingRules.add(extraSolvingRules.remove(0));
             }
         }
     }
@@ -84,7 +101,7 @@ public class RuleBasedSolver implements IKenKenSolver
     private boolean applyRules()
     {
         boolean change = false;
-        for (ISolvingRule rule : solvingRules)
+        for (ISolvingRule rule : baseSolvingRules)
         {
             if (rule.exhausted())
             {
