@@ -24,7 +24,7 @@ import static au.com.shawware.kenken.model.Cage.PLUS;
 class RowRule extends AbstractPlusRule
 {    // TODO: should rules receives the grid size or cages if they don't need them?
     // Solve in the rule factory
-    RowRule(int gridSize, @SuppressWarnings("unused") List<Cage> cages)
+    RowRule(int gridSize, List<Cage> cages)
     {
         super("Row", buildCages(gridSize, cages), false); //$NON-NLS-1$
     }

@@ -46,7 +46,6 @@ public class Cage
         this.value = value;
         this.squares = (squares == null) ? Collections.emptyList() : Collections.unmodifiableList(squares);
         this.size = this.squares.size();
-        // TODO: sort by size somewhere?
     }
 
     public final String getOperation()

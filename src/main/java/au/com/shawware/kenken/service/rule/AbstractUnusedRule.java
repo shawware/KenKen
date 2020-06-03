@@ -43,7 +43,7 @@ abstract class AbstractUnusedRule extends AbstractRule
                 .collect(Collectors.toList());
         if (sort)
         {
-            cageStates.sort((cs1, cs2) -> Integer.compare(cs1.getCage().getSquares().size(), cs2.getCage().getSquares().size()));
+            cageStates.sort((cs1, cs2) -> Integer.compare(cs1.getCage().getSize(), cs2.getCage().getSize()));
         }
         return cageStates;
     }

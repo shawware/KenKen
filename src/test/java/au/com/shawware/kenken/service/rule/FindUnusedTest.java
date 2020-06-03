@@ -41,12 +41,12 @@ public class FindUnusedTest
     private static final int CORNER = 1;
     private static final int SQUARE = 2;
     
-    private AbstractUnusedRule solver;
+    private AbstractUnusedRule rule;
     private Cage cage;
     private List<SquareState> squareStates; // Keep a reference so we can manipulate the base test conditions.
 
     @SuppressWarnings("incomplete-switch")
-    private void prepareSolver(int gridSize, int gridType, int numberOfSquares, String operation, int value)
+    private void prepareRule(int gridSize, int gridType, int numberOfSquares, String operation, int value)
     {
         final List<Square> squares = new ArrayList<>(numberOfSquares);
         squareStates = new ArrayList<>(numberOfSquares);
@@ -64,10 +64,10 @@ public class FindUnusedTest
 
         switch(operation)
         {
-            case MINUS  : solver = new MinusRule (gridSize, cages); break;
-            case PLUS   : solver = new PlusRule  (gridSize, cages); break;
-            case TIMES  : solver = new TimesRule (gridSize, cages); break;
-            case DIVIDE : solver = new DivideRule(gridSize, cages); break;
+            case MINUS  : rule = new MinusRule (gridSize, cages); break;
+            case PLUS   : rule = new PlusRule  (gridSize, cages); break;
+            case TIMES  : rule = new TimesRule (gridSize, cages); break;
+            case DIVIDE : rule = new DivideRule(gridSize, cages); break;
         }
     }
     
@@ -75,7 +75,7 @@ public class FindUnusedTest
     private int[][] prepareCoordinates(int gridType, int numberOfSquares)
     {
         // Check we don't pass in incorrect arguments.
-        if ((numberOfSquares == 1) || (numberOfSquares == 2))
+        if (numberOfSquares == 2)
         {
             assertEquals(LINEAR, gridType);
         }
@@ -129,45 +129,45 @@ public class FindUnusedTest
 
         List<Set<Integer>> unusedValues;
 
-        prepareSolver(gridSize, LINEAR, PAIR, MINUS, 1);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, MINUS, 1);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), Collections.emptySet());
 
-        prepareSolver(gridSize, LINEAR, PAIR, MINUS, 1);
+        prepareRule(gridSize, LINEAR, PAIR, MINUS, 1);
         squareStates.get(0).removeValue(2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), setOf(1, 3));
 
-        prepareSolver(gridSize, LINEAR, PAIR, MINUS, 1);
+        prepareRule(gridSize, LINEAR, PAIR, MINUS, 1);
         squareStates.get(1).removeValue(1);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), Collections.emptySet());
 
-        prepareSolver(gridSize, LINEAR, PAIR, MINUS, 1);
+        prepareRule(gridSize, LINEAR, PAIR, MINUS, 1);
         squareStates.get(0).removeValue(1);
         squareStates.get(0).removeValue(3);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), setOf(2));
 
-        prepareSolver(gridSize, LINEAR, PAIR, MINUS, 2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, MINUS, 2);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2), setOf(2));
 
-        prepareSolver(gridSize, LINEAR, PAIR, MINUS, 2);
+        prepareRule(gridSize, LINEAR, PAIR, MINUS, 2);
         squareStates.get(0).removeValue(2);
         squareStates.get(1).removeValue(2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), Collections.emptySet());
 
-        prepareSolver(gridSize, LINEAR, PAIR, MINUS, 2);
+        prepareRule(gridSize, LINEAR, PAIR, MINUS, 2);
         squareStates.get(0).removeValue(1);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2), setOf(2, 3));
 
-        prepareSolver(gridSize, LINEAR, PAIR, MINUS, 2);
+        prepareRule(gridSize, LINEAR, PAIR, MINUS, 2);
         squareStates.get(0).removeValue(1);
         squareStates.get(1).removeValue(1);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2, 3), setOf(2, 3));
     }
 
@@ -178,26 +178,26 @@ public class FindUnusedTest
 
         List<Set<Integer>> unusedValues;
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 2);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(3), setOf(3));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 3);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 3);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2, 4), setOf(2, 4));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 4);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 4);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2, 3), setOf(2, 3));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 2);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 2);
         squareStates.get(0).removeValue(1);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(3), setOf(3));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 2);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 2);
         squareStates.get(1).removeValue(2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(1, 3, 4), setOf(3));
     }
 
@@ -208,32 +208,32 @@ public class FindUnusedTest
 
         List<Set<Integer>> unusedValues;
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 2);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(5), setOf(5));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 3);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 3);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(4, 5), setOf(4, 5));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 4);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 4);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2, 3, 5, 6), setOf(2, 3, 5, 6));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 2);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 2);
         squareStates.get(1).removeValue(2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(1, 4, 5), setOf(5));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 2);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 2);
         squareStates.get(0).removeValue(2);
         squareStates.get(1).removeValue(4);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(5), setOf(1, 5));
 
-        prepareSolver(gridSize, LINEAR, PAIR, DIVIDE, 3);
+        prepareRule(gridSize, LINEAR, PAIR, DIVIDE, 3);
         squareStates.get(0).removeValue(3);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(4, 5), setOf(1, 4, 5));
     }
 
@@ -244,27 +244,27 @@ public class FindUnusedTest
 
         List<Set<Integer>> unusedValues;
 
-        prepareSolver(gridSize, LINEAR, PAIR, PLUS, 5);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, PLUS, 5);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(1), setOf(1));
 
-        prepareSolver(gridSize, LINEAR, TRIPLE, PLUS, 6);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, TRIPLE, PLUS, 6);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
 
-        prepareSolver(gridSize, LINEAR, TRIPLE, PLUS, 6);
+        prepareRule(gridSize, LINEAR, TRIPLE, PLUS, 6);
         squareStates.get(0).removeValue(2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
 
-        prepareSolver(gridSize, LINEAR, TRIPLE, PLUS, 6);
+        prepareRule(gridSize, LINEAR, TRIPLE, PLUS, 6);
         squareStates.get(0).removeValue(3);
         squareStates.get(1).removeValue(3);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), Collections.emptySet(), setOf(1, 2));
 
-        prepareSolver(gridSize, CORNER, TRIPLE, PLUS, 4);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, CORNER, TRIPLE, PLUS, 4);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2, 3), setOf(1, 3), setOf(2, 3));
     }
 
@@ -275,29 +275,29 @@ public class FindUnusedTest
 
         List<Set<Integer>> unusedValues;
 
-        prepareSolver(gridSize, LINEAR, PAIR, TIMES, 2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, TIMES, 2);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(3), setOf(3));
 
-        prepareSolver(gridSize, LINEAR, PAIR, TIMES, 3);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, TIMES, 3);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2), setOf(2));
 
-        prepareSolver(gridSize, LINEAR, PAIR, TIMES, 6);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, LINEAR, PAIR, TIMES, 6);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(1), setOf(1));
 
-        prepareSolver(gridSize, LINEAR, TRIPLE, TIMES, 6);
+        prepareRule(gridSize, LINEAR, TRIPLE, TIMES, 6);
         squareStates.get(0).removeValue(2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
 
-        prepareSolver(gridSize, CORNER, TRIPLE, TIMES, 2);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, CORNER, TRIPLE, TIMES, 2);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(2, 3), setOf(1, 3), setOf(2, 3));
 
-        prepareSolver(gridSize, CORNER, TRIPLE, TIMES, 4);
-        unusedValues = solver.findUnusedValues(cage, squareStates);
+        prepareRule(gridSize, CORNER, TRIPLE, TIMES, 4);
+        unusedValues = rule.findUnusedValues(cage, squareStates);
         verifyResult(unusedValues, setOf(1, 3), setOf(2, 3), setOf(1, 3));
     }
 
