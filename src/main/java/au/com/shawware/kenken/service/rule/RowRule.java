@@ -22,11 +22,11 @@ import static au.com.shawware.kenken.model.Cage.PLUS;
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
 class RowRule extends AbstractPlusRule
-{    // TODO: should rules receives cages if they don't need them?
+{    // TODO: should rules receives the grid size or cages if they don't need them?
     // Solve in the rule factory
     RowRule(int gridSize, @SuppressWarnings("unused") List<Cage> cages)
     {
-        super("Row", gridSize, buildCages(gridSize)); //$NON-NLS-1$
+        super("Row", buildCages(gridSize)); //$NON-NLS-1$
     }
 
     // TODO: common code within row and column?

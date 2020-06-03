@@ -13,10 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import au.com.shawware.kenken.model.Cage;
-import au.com.shawware.util.StringUtil;
 
 /**
  * Solves a rule that applies an operation to a pair.
@@ -25,104 +23,14 @@ import au.com.shawware.util.StringUtil;
  */
 abstract class AbstractPairRule extends AbstractUnusedRule
 {
-    // TODO: extract common code from APair APerm
-    private final int gridSize;
     private final Function<Integer, BiFunction<Integer, Integer, Boolean>> operationSupplier;
-    private final List<CageState> cageStates;
 
-    private boolean initialised;
-
-    AbstractPairRule(String name, int gridSize, String operation, List<Cage> cages, Function<Integer, BiFunction<Integer, Integer, Boolean>> operationSupplier)
+    AbstractPairRule(String name, String operation, List<Cage> cages, Function<Integer, BiFunction<Integer, Integer, Boolean>> operationSupplier)
     {
-        super(name);
-        this.gridSize = gridSize;
+        super(name, operation, cages);
         this.operationSupplier = operationSupplier;
-        this.exhausted = cages.isEmpty();
-        this.initialised = false;
-        this.cageStates = buildCageStates(operation, cages);
     }
 
-    @SuppressWarnings("static-method")
-    private List<CageState> buildCageStates(String operation, List<Cage> cages)
-    {
-        return cages.stream()
-                .filter(cage -> cage.getOperation().equals(operation))
-                .map(cage -> new CageState(cage))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean applyTo(SquareState[][] gridState)
-    {
-        if (exhausted)
-        {
-            return false;
-        }
-
-        if (!initialised)
-        {
-            cageStates.forEach(cageState -> cageState.initialise(gridState));
-            initialised = true;
-        }
-
-        boolean change = false;
-        for (CageState cageState : cageStates)
-        {
-            if (solveCage(cageState))
-            {
-                change = true;
-            }
-        }
-
-        exhausted = cageStates.stream().allMatch(CageState::isSolved);
-
-        return change;
-    }
-
-    private boolean solveCage(CageState cageState)
-    {
-        // Our grid may have been solved by other work, so we check for that first.
-        // TODO: is this true?
-        if (cageState.isSolved())
-        {
-            System.out.format("Called on a pre-solved cage\n");
-            return false;
-        }
-
-        List<SquareState> squareStates = cageState.getSquareStates();
-
-        if (couldBeSolved(squareStates))
-        {
-            System.out.format("Found a pre-solved c\n");
-            // TODO: marked as solved, exhausted 
-            return false;
-        }
-
-        List<Set<Integer>> unusedValues = findUnusedValues(cageState.getCage(), squareStates);
-        // TODO: remove assert
-        assert (unusedValues.size() == squareStates.size());
-        boolean change = false;
-        for (int i = 0; i < unusedValues.size(); i++)
-        {
-            Set<Integer> unused = unusedValues.get(i);
-            if (!unused.isEmpty())
-            {
-                change = true;
-                System.out.format("Removing any unused values found: %s\n", unusedValues.get(i));
-                SquareState squareState = squareStates.get(i);
-                if (!squareState.isSolved())
-                {
-                    System.out.format("Removing from %s\n", squareState);
-                    squareState.removeValues(unusedValues.get(i));
-                    squareState.solve();
-                }
-            }
-        }
-
-        return change;
-    }
-
-    // Package visibility for testing
     @Override
     @SuppressWarnings("boxing")
     List<Set<Integer>> findUnusedValues(Cage cage, List<SquareState> cageState)
@@ -171,35 +79,5 @@ abstract class AbstractPairRule extends AbstractUnusedRule
                 unused.add(i1);
             }
         }
-    }
-
-    @SuppressWarnings("static-method")
-    private boolean couldBeSolved(List<SquareState> squareStates)
-    {
-        boolean couldBeSolved = true;
-        
-        // TODO: this loop can be better
-        for (SquareState squareState : squareStates)
-        {
-            if (squareState.isSolved())
-            {
-                continue;
-            }
-            if (squareState.couldBeSolved())
-            {
-                continue;
-            }
-            couldBeSolved = false;
-            break;
-        }
-
-        return couldBeSolved;
-    }
-
-    @Override
-    @SuppressWarnings("boxing")
-    public String toString()
-    {
-        return StringUtil.toString(gridSize, cageStates);
     }
 }

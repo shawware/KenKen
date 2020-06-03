@@ -25,8 +25,8 @@ class MinusRule extends AbstractPairRule
     @SuppressWarnings("boxing")
     private static final Function<Integer, BiFunction<Integer, Integer, Boolean>> SUBTRACTION = value -> (i1, i2) -> (Math.abs(i1 - i2) == value);
 
-    MinusRule(int gridSize, List<Cage> cages)
+    MinusRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
     {
-        super("Minus", gridSize, MINUS, cages, SUBTRACTION); //$NON-NLS-1$
+        super("Minus", MINUS, cages, SUBTRACTION); //$NON-NLS-1$
     }
 }

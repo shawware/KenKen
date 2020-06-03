@@ -25,8 +25,8 @@ class DivideRule extends AbstractPairRule
     @SuppressWarnings("boxing")
     private static final Function<Integer, BiFunction<Integer, Integer, Boolean>> DIVISION = value -> (i1, i2) -> (i1 / i2 == value && i1 % i2 == 0) || (i2 / i1 == value && i2 % i1 == 0);
 
-    DivideRule(int gridSize, List<Cage> cages)
+    DivideRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
     {
-        super("Division", gridSize, DIVIDE, cages, DIVISION); //$NON-NLS-1$
+        super("Division", DIVIDE, cages, DIVISION); //$NON-NLS-1$
     }
 }

@@ -25,8 +25,8 @@ abstract class AbstractPlusRule extends AbstractPermutationRule
     @SuppressWarnings("boxing")
     private static final Function<Integer, BiFunction<Integer, Integer, Integer>> ADDITION = value -> (i1, i2) -> i1 + i2;
 
-    AbstractPlusRule(String name, int gridSize, List<Cage> cages)
+    AbstractPlusRule(String name, List<Cage> cages)
     {
-        super(name, gridSize, PLUS, cages, ADDITION);
+        super(name, PLUS, cages, ADDITION);
     }
 }
