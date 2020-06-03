@@ -25,27 +25,36 @@ class ColumnRule extends AbstractPlusRule
 {
     // TODO: should rules receives cages if they don't need them?
     // Solve in the rule factory
-    ColumnRule(int gridSize, @SuppressWarnings("unused") List<Cage> cages)
+    ColumnRule(int gridSize, List<Cage> cages)
     {
-        super("Column", buildCages(gridSize), false); //$NON-NLS-1$
+        super("Column", buildCages(gridSize, cages), false); //$NON-NLS-1$
     }
 
-    private static List<Cage> buildCages(int gridSize)
+    private static List<Cage> buildCages(int gridSize, List<Cage> cages)
     {
         int sum = IntStream.rangeClosed(1, gridSize).sum();
-    
-        List<Cage> cages = new ArrayList<>(gridSize);
+        Square[][] grid = extractGrid(gridSize, cages);
+
+        List<Cage> columns = new ArrayList<>(gridSize);
         for (int x = 0; x < gridSize; x++)
         {
             List<Square> squares = new ArrayList<>(gridSize);
             for (int y = 0; y < gridSize; y++)
             {
-                // TODO: find a way to re-use the squares from the grid
-                squares.add(new Square(x, y));
+                squares.add(grid[x][y]);
             }
-            cages.add(new Cage(PLUS, sum, squares));
+            columns.add(new Cage(PLUS, sum, squares));
         }
         
-        return cages;
+        return columns;
+    }
+
+    private static Square[][] extractGrid(int gridSize, List<Cage> cages)
+    {
+        Square[][] grid = new Square[gridSize][gridSize];
+        cages.forEach(cage ->
+            cage.getSquares().forEach(square -> grid[square.getX()][square.getY()] = square)
+        );
+        return grid;
     }
 }
