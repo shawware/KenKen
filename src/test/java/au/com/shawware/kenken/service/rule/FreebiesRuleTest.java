@@ -74,8 +74,8 @@ public class FreebiesRuleTest
         assertTrue(rule.exhausted());
         assertFalse(rule.applyTo(gridState));
 
-        assertThat(gridState.getValues(2, 2), equalTo(Collections.singletonList(1)));
-        assertThat(gridState.getValues(1, 2), equalTo(Collections.singletonList(3)));
+        assertThat(gridState.getValues(new Square(2, 2)), equalTo(Collections.singletonList(1)));
+        assertThat(gridState.getValues(new Square(1, 2)), equalTo(Collections.singletonList(3)));
     }
 
     
