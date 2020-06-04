@@ -8,12 +8,12 @@
 package au.com.shawware.kenken.service.rule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.GridSpecification;
 import au.com.shawware.kenken.service.IKenKenSolver;
+import au.com.shawware.util.StringUtil;
 
 /**
  * Solves a KenKen puzzle by iterating over a set of rules.
@@ -115,7 +115,7 @@ public class RuleBasedSolver implements IKenKenSolver
                 System.out.format("Rule changed the state: %s\n", rule.name());
                 singlesRule.applyTo(gridState);
             }
-            System.out.format("After rule %s: %s\n", rule.name(), Arrays.deepToString(gridState));
+            System.out.format("After rule %s: %s\n", rule.name(), StringUtil.arrayToString(gridState));
         }
         return change;
     }
