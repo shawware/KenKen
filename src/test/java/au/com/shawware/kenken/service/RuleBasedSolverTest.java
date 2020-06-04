@@ -116,7 +116,7 @@ public class RuleBasedSolverTest extends AbstractBaseTest
     {
         GridSpecification specification = loadGridSpecification(filename);
         IssueHolder issues = verifier.verifyGridSpecification(specification);
-        assertEquals(issues.toString(), 0,  issues.numberOfErrors());
+        assertEquals(issues.toString(), 0, issues.numberOfErrors());
         return specification;
     }
 }

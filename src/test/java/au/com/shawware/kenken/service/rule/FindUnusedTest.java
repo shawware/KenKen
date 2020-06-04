@@ -23,8 +23,9 @@ import static au.com.shawware.kenken.model.Cage.DIVIDE;
 import static au.com.shawware.kenken.model.Cage.MINUS;
 import static au.com.shawware.kenken.model.Cage.PLUS;
 import static au.com.shawware.kenken.model.Cage.TIMES;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Validate the algorithm for finding un-used square values.
@@ -307,10 +308,7 @@ public class FindUnusedTest
         assertEquals(expectedValues.length, actualValues.size());
         for (int i = 0; i < expectedValues.length; i++)
         {
-            Set<Integer> expected = expectedValues[i];
-            Set<Integer> actual = actualValues.get(i);
-            assertEquals(expected.size(), actual.size());
-            expected.forEach(v -> assertTrue(actual.contains(v)));
+            assertThat(actualValues.get(i), equalTo(expectedValues[i]));
         }
     }
 

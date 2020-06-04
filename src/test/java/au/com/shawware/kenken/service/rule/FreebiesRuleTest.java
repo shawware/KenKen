@@ -10,9 +10,6 @@ package au.com.shawware.kenken.service.rule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +21,8 @@ import static au.com.shawware.kenken.model.Cage.DIVIDE;
 import static au.com.shawware.kenken.model.Cage.EQUALS;
 import static au.com.shawware.kenken.model.Cage.MINUS;
 import static au.com.shawware.kenken.model.Cage.PLUS;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -62,6 +60,7 @@ public class FreebiesRuleTest
     }
 
     @Test
+    @SuppressWarnings("boxing")
     public void testFreebies()
     {
         cages.add(buildCage(GRID_SIZE, EQUALS, 1, new int[][] {{2,2}}));
@@ -74,8 +73,8 @@ public class FreebiesRuleTest
         assertTrue(rule.exhausted());
         assertFalse(rule.applyTo(gridState));
 
-        assertListsEqual(Collections.singletonList(1), gridState[2][2].getValues());
-        assertListsEqual(Collections.singletonList(3), gridState[1][2].getValues());
+        assertThat(gridState[2][2].getValues(), equalTo(Collections.singletonList(1)));
+        assertThat(gridState[1][2].getValues(), equalTo(Collections.singletonList(3)));
     }
 
     
@@ -101,38 +100,5 @@ public class FreebiesRuleTest
             squares.add(new Square(pair[0], pair[1]));
         }
         return squares;
-    }
-
-    @SafeVarargs
-    private final void verifyResult(List<Set<Integer>> actualValues, Set<Integer>... expectedValues)
-    {
-        assertEquals(expectedValues.length, actualValues.size());
-        for (int i = 0; i < expectedValues.length; i++)
-        {
-            Set<Integer> expected = expectedValues[i];
-            Set<Integer> actual = actualValues.get(i);
-            assertEquals(expected.size(), actual.size());
-            expected.forEach(v -> assertTrue(actual.contains(v)));
-        }
-    }
-
-    private void assertListsEqual(List<Integer> expected, List<Integer> actual)
-    {
-        assertEquals(expected.size(), actual.size());
-        for (int i = 0; i < expected.size(); i++)
-        {
-            assertEquals(expected.get(i), actual.get(i));
-        }
-    }
-
-    private void assertSetsEqual(Set<Integer> expected, Set<Integer> actual)
-    {
-        assertEquals(expected.size(), actual.size());
-        expected.forEach(v -> assertTrue(actual.contains(v)));
-    }
-
-    private Set<Integer> setOf(int... values)
-    {
-        return IntStream.of(values).boxed().collect(Collectors.toSet());
     }
 }
