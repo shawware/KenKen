@@ -9,10 +9,14 @@ package au.com.shawware.kenken.service.rule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.GridSpecification;
+import au.com.shawware.kenken.model.Square;
 import au.com.shawware.kenken.service.IKenKenSolver;
+
+import static au.com.shawware.kenken.model.Cage.PLUS;
 
 /**
  * Solves a KenKen puzzle by iterating over a set of rules.
@@ -33,35 +37,82 @@ public class RuleBasedSolver implements IKenKenSolver
 
         gridState = new GridState(gridSize, cages);
         baseSolvingRules = buildBaseSolvingRules(gridSize, cages);
-        extraSolvingRules = buildExtraSolvingRules(gridSize, cages);
+        extraSolvingRules = buildExtraSolvingRules(cages);
         singlesRule = new SinglesRule(gridSize, cages);
     }
 
-    @SuppressWarnings("static-method")
     private List<ISolvingRule> buildBaseSolvingRules(int gridSize, List<Cage> cages)
     {
         List<ISolvingRule> solvingRules = new ArrayList<>();
         
-        solvingRules.add(new FreebiesRule(gridSize, cages));
-        solvingRules.add(new MinusRule(gridSize, cages));
-        solvingRules.add(new DivideRule(gridSize, cages));
-        solvingRules.add(new PlusRule(gridSize, cages));
-        solvingRules.add(new TimesRule(gridSize, cages));
-        solvingRules.add(new RowRule(gridSize, cages));
-        solvingRules.add(new ColumnRule(gridSize, cages));
+        solvingRules.add(new FreebiesRule(cages));
+        solvingRules.add(new MinusRule(cages));
+        solvingRules.add(new DivideRule(cages));
+        solvingRules.add(new PlusRule(cages));
+        solvingRules.add(new TimesRule(cages));
+
+        int sum = IntStream.rangeClosed(1, gridSize).sum();
+        Square[][] grid = extractGrid(gridSize, cages);
+        List<Cage> rows = buildRows(gridSize, sum, grid);
+        List<Cage> columns = buildColumns(gridSize, sum, grid);
+        
+        solvingRules.add(new RowRule(rows));
+        solvingRules.add(new ColumnRule(columns));
      
         return solvingRules;
     }
 
     @SuppressWarnings("static-method")
-    private List<ISolvingRule> buildExtraSolvingRules(int gridSize, List<Cage> cages)
+    private List<ISolvingRule> buildExtraSolvingRules(List<Cage> cages)
     {
         List<ISolvingRule> solvingRules = new ArrayList<>();
         
-        solvingRules.add(new PairsRule(gridSize, cages));
-        solvingRules.add(new TriplesRule(gridSize, cages));
+        solvingRules.add(new PairsRule(cages));
+        solvingRules.add(new TriplesRule(cages));
      
         return solvingRules;
+    }
+
+    @SuppressWarnings("static-method")
+    private List<Cage> buildRows(int gridSize, int sum, Square[][] grid)
+    {
+        List<Cage> rows = new ArrayList<>(gridSize);
+        for (int y = 0; y < gridSize; y++)
+        {
+            List<Square> squares = new ArrayList<>(gridSize);
+            for (int x = 0; x < gridSize; x++)
+            {
+                squares.add(grid[x][y]);
+            }
+            rows.add(new Cage(PLUS, sum, squares));
+        }
+        return rows;
+    }
+
+    @SuppressWarnings("static-method")
+    private List<Cage> buildColumns(int gridSize, int sum, Square[][] grid)
+    {
+        List<Cage> columns = new ArrayList<>(gridSize);
+        for (int x = 0; x < gridSize; x++)
+        {
+            List<Square> squares = new ArrayList<>(gridSize);
+            for (int y = 0; y < gridSize; y++)
+            {
+                squares.add(grid[x][y]);
+            }
+            columns.add(new Cage(PLUS, sum, squares));
+        }
+        return columns;
+    }
+
+    @SuppressWarnings("static-method")
+    private Square[][] extractGrid(int gridSize, List<Cage> cages)
+    {
+        Square[][] grid = new Square[gridSize][gridSize];
+        cages.forEach(cage ->
+            cage.getSquares().forEach(square -> grid[square.getX()][square.getY()] = square)
+        );
+        return grid;
     }
 
     @Override

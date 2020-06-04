@@ -25,7 +25,7 @@ class TimesRule extends AbstractPermutationRule
     @SuppressWarnings("boxing")
     private static final Function<Integer, BiFunction<Integer, Integer, Integer>> MULTIPLICATION = value -> (i1, i2) -> i1 * i2;
 
-    TimesRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
+    TimesRule(List<Cage> cages)
     {
         super("Times", TIMES, cages, true, MULTIPLICATION); //$NON-NLS-1$
     }

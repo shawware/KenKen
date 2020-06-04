@@ -25,13 +25,11 @@ import static au.com.shawware.kenken.model.Cage.EQUALS;
  */
 class FreebiesRule extends AbstractRule
 {
-    private final int gridSize;
     private final List<Cage> cages;
 
-    FreebiesRule(int gridSize, List<Cage> cages)
+    FreebiesRule(List<Cage> cages)
     {
         super("Freebies"); //$NON-NLS-1$
-        this.gridSize = gridSize;
         this.cages = cages.stream()
                 .filter(cage -> cage.getOperation().equals(EQUALS))
                 .collect(Collectors.toList());
@@ -48,7 +46,7 @@ class FreebiesRule extends AbstractRule
 
         cages.forEach(cage -> {
             Square square = cage.getSquares().get(0); // There's only ever one square.
-            IntStream.rangeClosed(1, gridSize)
+            IntStream.rangeClosed(1, gridState.getGridSize())
                 .filter(value -> value != cage.getValue())
                 .forEach(value -> gridState.removeValue(square, value));
         });
@@ -61,6 +59,6 @@ class FreebiesRule extends AbstractRule
     @SuppressWarnings("boxing")
     public String toString()
     {
-        return StringUtil.toString(exhausted, gridSize, cages);
+        return StringUtil.toString(exhausted, cages);
     }
 }

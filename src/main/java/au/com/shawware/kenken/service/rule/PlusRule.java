@@ -18,7 +18,7 @@ import au.com.shawware.kenken.model.Cage;
  */
 class PlusRule extends AbstractPlusRule
 {
-    PlusRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
+    PlusRule(List<Cage> cages)
     {
         super("Plus", cages, true); //$NON-NLS-1$
     }

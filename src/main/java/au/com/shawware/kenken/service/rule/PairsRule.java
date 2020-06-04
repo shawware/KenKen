@@ -22,7 +22,7 @@ import static au.com.shawware.kenken.model.Cage.PLUS;
  */
 class PairsRule extends AbstractPlusRule
 {
-    PairsRule(@SuppressWarnings("unused") int gridSize, List<Cage> cages)
+    PairsRule(List<Cage> cages)
     {
         super("Pairs", buildCages(cages), true); //$NON-NLS-1$
     }

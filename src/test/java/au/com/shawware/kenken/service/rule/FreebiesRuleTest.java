@@ -47,7 +47,7 @@ public class FreebiesRuleTest
 
         final GridState gridState = new GridState(GRID_SIZE, cages);
 
-        final ISolvingRule rule = new FreebiesRule(GRID_SIZE, cages);
+        final ISolvingRule rule = new FreebiesRule(cages);
 
         assertTrue(rule.exhausted());
         assertFalse(rule.applyTo(gridState));
@@ -67,7 +67,7 @@ public class FreebiesRuleTest
 
         final GridState gridState = new GridState(GRID_SIZE, cages);
 
-        final ISolvingRule rule = new FreebiesRule(GRID_SIZE, cages);
+        final ISolvingRule rule = new FreebiesRule(cages);
 
         assertFalse(rule.exhausted());
         assertTrue(rule.applyTo(gridState));

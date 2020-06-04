@@ -57,10 +57,10 @@ public class FindUnusedTest
 
         switch(operation)
         {
-            case MINUS  : rule = new MinusRule (gridSize, cages); break;
-            case PLUS   : rule = new PlusRule  (gridSize, cages); break;
-            case TIMES  : rule = new TimesRule (gridSize, cages); break;
-            case DIVIDE : rule = new DivideRule(gridSize, cages); break;
+            case MINUS  : rule = new MinusRule (cages); break;
+            case PLUS   : rule = new PlusRule  (cages); break;
+            case TIMES  : rule = new TimesRule (cages); break;
+            case DIVIDE : rule = new DivideRule(cages); break;
         }
     }
     
