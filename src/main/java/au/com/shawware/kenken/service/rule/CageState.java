@@ -7,13 +7,13 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.model.Square;
 import au.com.shawware.util.StringUtil;
 
+// TODO: is this still required
 /**
  * Holds the state for a single cage.
  *
@@ -23,38 +23,21 @@ class CageState
 {
     private final Cage cage;
 
-    private List<SquareState> squareStates;
-    private boolean initialised;
     private boolean solved;
 
     CageState(Cage cage)
     {
         this.cage = cage;
-        this.squareStates = Collections.emptyList();
-        this.initialised = false;
         this.solved = false;
     }
 
-    boolean isSolved()
+    boolean isSolved(GridState gridState)
     {
         if (!solved)
         {
-            solved = squareStates.stream().allMatch(SquareState::isSolved);
+            solved = cage.getSquares().stream().allMatch(square -> gridState.isSolved(square));
         }
         return solved;
-    }
-
-    void initialise(SquareState[][] gridState)
-    {
-        if (!initialised)
-        {
-            initialised = true;
-            squareStates = Collections.unmodifiableList(
-                    cage.getSquares().stream()
-                        .map(square -> gridState[square.getX()][square.getY()])
-                        .collect(Collectors.toList())
-            );
-        }
     }
 
     Cage getCage()
@@ -62,15 +45,15 @@ class CageState
         return cage;
     }
 
-    List<SquareState> getSquareStates()
+    List<Square> getSquares()
     {
-        return squareStates;
+        return cage.getSquares();
     }
 
     @Override
     @SuppressWarnings("boxing")
     public String toString()
     {
-        return StringUtil.toString(initialised, solved, cage, squareStates);
+        return StringUtil.toString(solved, cage);
     }
 }

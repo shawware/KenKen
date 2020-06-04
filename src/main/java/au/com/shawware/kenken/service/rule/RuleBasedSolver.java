@@ -13,7 +13,6 @@ import java.util.List;
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.GridSpecification;
 import au.com.shawware.kenken.service.IKenKenSolver;
-import au.com.shawware.util.StringUtil;
 
 /**
  * Solves a KenKen puzzle by iterating over a set of rules.
@@ -22,36 +21,24 @@ import au.com.shawware.util.StringUtil;
  */
 public class RuleBasedSolver implements IKenKenSolver
 {
-    private final int gridSize;
-    private final List<Cage> cages;
-    private final SquareState[][] gridState;
+    private final GridState gridState;
     private final List<ISolvingRule> baseSolvingRules;
     private final List<ISolvingRule> extraSolvingRules;
     private final ISolvingRule singlesRule;
 
     public RuleBasedSolver(GridSpecification specification)
     {
-        this.gridSize = specification.getSize();
-        this.cages = specification.getCages();
-        this.gridState = buildGridState();
-        this.baseSolvingRules = buildBaseSolvingRules();
-        this.extraSolvingRules = buildExtraSolvingRules();
-        this.singlesRule = new SinglesRule(gridSize, cages);
+        final int gridSize = specification.getSize();
+        final List<Cage> cages = specification.getCages();
+
+        gridState = new GridState(gridSize, cages);
+        baseSolvingRules = buildBaseSolvingRules(gridSize, cages);
+        extraSolvingRules = buildExtraSolvingRules(gridSize, cages);
+        singlesRule = new SinglesRule(gridSize, cages);
     }
 
-    @SuppressWarnings("hiding")
-    private SquareState[][] buildGridState()
-    {
-        final SquareState[][] gridState = new SquareState[gridSize][gridSize];
-        cages.forEach(cage ->
-            cage.getSquares().forEach(square ->
-                gridState[square.getX()][square.getY()] = new SquareState(gridSize, square)
-            )
-        );
-        return gridState;
-    }
-
-    private List<ISolvingRule> buildBaseSolvingRules()
+    @SuppressWarnings("static-method")
+    private List<ISolvingRule> buildBaseSolvingRules(int gridSize, List<Cage> cages)
     {
         List<ISolvingRule> solvingRules = new ArrayList<>();
         
@@ -66,7 +53,8 @@ public class RuleBasedSolver implements IKenKenSolver
         return solvingRules;
     }
 
-    private List<ISolvingRule> buildExtraSolvingRules()
+    @SuppressWarnings("static-method")
+    private List<ISolvingRule> buildExtraSolvingRules(int gridSize, List<Cage> cages)
     {
         List<ISolvingRule> solvingRules = new ArrayList<>();
         
@@ -115,7 +103,7 @@ public class RuleBasedSolver implements IKenKenSolver
                 System.out.format("Rule changed the state: %s\n", rule.name());
                 singlesRule.applyTo(gridState);
             }
-            System.out.format("After rule %s: %s\n", rule.name(), StringUtil.arrayToString(gridState));
+            System.out.format("After rule %s: %s\n", rule.name(), gridState);
         }
         return change;
     }
@@ -123,33 +111,12 @@ public class RuleBasedSolver implements IKenKenSolver
     @Override
     public boolean gridIsSolved()
     {
-        boolean isSolved = true;
-        out:
-        for (int x=0; x<gridSize; x++)
-        {
-            for (int y=0; y<gridSize; y++)
-            {
-                if (!gridState[x][y].isSolved())
-                {
-                    isSolved = false;
-                    break out;
-                }
-            }
-        }
-        return isSolved;
+        return gridState.isSolved();
     }
 
     @Override
     public int[][] solution()
     {
-        int[][] solution = new int[gridSize][gridSize];
-        for (int x = 0; x < gridSize; x++)
-        {
-            for (int y = 0; y < gridSize; y++)
-            {
-                solution[x][y] = gridState[x][y].value();
-            }
-        }
-        return solution;
+        return gridState.solution();
     }
 }

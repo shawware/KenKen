@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.model.Square;
 import au.com.shawware.util.StringUtil;
 
 /**
@@ -21,9 +22,8 @@ import au.com.shawware.util.StringUtil;
  */
 abstract class AbstractUnusedRule extends AbstractRule
 {
+    // TODO: can this be a list of cages
     private final List<CageState> cageStates;
-
-    private boolean initialised;
 
     AbstractUnusedRule(String name, String operation, List<Cage> cages, boolean sort)
     {
@@ -31,7 +31,6 @@ abstract class AbstractUnusedRule extends AbstractRule
 
         this.exhausted = cages.isEmpty();
         this.cageStates = buildCageStates(operation, cages, sort);
-        this.initialised = false;
     }
 
     @SuppressWarnings({ "static-method", "hiding" })
@@ -49,37 +48,31 @@ abstract class AbstractUnusedRule extends AbstractRule
     }
 
     @Override
-    public final boolean applyTo(SquareState[][] gridState)
+    public final boolean applyTo(GridState gridState)
     {
         if (exhausted)
         {
             return false;
         }
 
-        if (!initialised)
-        {
-            cageStates.forEach(cageState -> cageState.initialise(gridState));
-            initialised = true;
-        }
-
         boolean change = false;
         for (CageState cageState : cageStates)
         {
-            if (!cageState.isSolved() && solveCage(cageState))
+            if (!cageState.isSolved(gridState) && solveCage(cageState, gridState))
             {
                 change = true;
             }
         }
 
-        exhausted = cageStates.stream().allMatch(CageState::isSolved);
+        exhausted = cageStates.stream().allMatch(cageState -> cageState.isSolved(gridState));
 
         return change;
     }
 
-    private boolean solveCage(CageState cageState)
+    private boolean solveCage(CageState cageState, GridState gridState)
     {
-        List<SquareState> squareStates = cageState.getSquareStates();
-        List<Set<Integer>> unusedValues = findUnusedValues(cageState.getCage(), squareStates);
+        List<Square> squares = cageState.getSquares();
+        List<Set<Integer>> unusedValues = findUnusedValues(cageState.getCage(), gridState);
         boolean change = false;
         for (int i = 0; i < unusedValues.size(); i++)
         {
@@ -87,11 +80,11 @@ abstract class AbstractUnusedRule extends AbstractRule
             if (!unused.isEmpty())
             {
                 change = true;
-                SquareState squareState = squareStates.get(i);
-                if (!squareState.isSolved())
+                Square square = squares.get(i);
+                if (!gridState.isSolved(square))
                 {
-                    squareState.removeValues(unusedValues.get(i));
-                    squareState.solve();
+                    gridState.removeValues(square, unusedValues.get(i));
+                    gridState.solve(square);
                 }
             }
         }
@@ -100,7 +93,7 @@ abstract class AbstractUnusedRule extends AbstractRule
     }
     
     // Package visibility for testing
-    abstract List<Set<Integer>> findUnusedValues(Cage cage, List<SquareState> squareState);
+    abstract List<Set<Integer>> findUnusedValues(Cage cage, GridState gridState);
 
     @Override
     public String toString()

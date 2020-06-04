@@ -15,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.model.Square;
 
 /**
  * Solves a rule that applies an operation to a pair.
@@ -33,24 +34,25 @@ abstract class AbstractPairRule extends AbstractUnusedRule
 
     @Override
     @SuppressWarnings("boxing")
-    List<Set<Integer>> findUnusedValues(Cage cage, List<SquareState> cageState)
+    List<Set<Integer>> findUnusedValues(Cage cage, GridState gridState)
     {
-        final List<Set<Integer>> unusedValues = new ArrayList<>(cageState.size());
+        final List<Square> squares = cage.getSquares();
+        final List<Set<Integer>> unusedValues = new ArrayList<>(squares.size());
 
-        for (int i = 0; i < cageState.size(); i++)
+        for (int i = 0; i < squares.size(); i++)
         {
             unusedValues.add(new HashSet<>());
         }
 
-        handleTwoValues(cageState, unusedValues, operationSupplier.apply(cage.getValue()));
+        handleTwoValues(squares, unusedValues, gridState, operationSupplier.apply(cage.getValue()));
 
         return unusedValues;
     }
  
-    private void handleTwoValues(List<SquareState> cageState, List<Set<Integer>> unusedValues, BiFunction<Integer, Integer, Boolean> operation)
+    private void handleTwoValues(List<Square> squares, List<Set<Integer>> unusedValues, GridState gridState, BiFunction<Integer, Integer, Boolean> operation)
     {
-        final List<Integer> s1Values = cageState.get(0).getValues();
-        final List<Integer> s2Values = cageState.get(1).getValues();
+        final List<Integer> s1Values = gridState.getValues(squares.get(0));
+        final List<Integer> s2Values = gridState.getValues(squares.get(1));
         
         handlePermutations(s1Values, s2Values, operation, unusedValues.get(0));
         handlePermutations(s2Values, s1Values, operation, unusedValues.get(1));

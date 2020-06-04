@@ -19,17 +19,15 @@ import au.com.shawware.util.StringUtil;
  */
 public class SinglesRule extends AbstractRule
 {
-    private final int gridSize;
-
-    public SinglesRule(int gridSize, @SuppressWarnings("unused") List<Cage> cages)
+    @SuppressWarnings("unused")
+    public SinglesRule(int gridSize, List<Cage> cages)
     {
         super("Singles"); //$NON-NLS-1$
-        this.gridSize = gridSize;
         this.exhausted = false; // this rule never exhausts
     }
 
     @Override
-    public boolean applyTo(SquareState[][] gridState)
+    public boolean applyTo(GridState gridState)
     {
         int count = 0;
         while (processSingleValues(gridState))
@@ -40,15 +38,14 @@ public class SinglesRule extends AbstractRule
         return (count > 0);
     }
 
-    private boolean processSingleValues(SquareState[][] gridState)
+    private boolean processSingleValues(GridState gridState)
     {
         boolean change = false;
-        for (int x = 0; x < gridSize; x++)
+        for (int x = 0; x < gridState.getGridSize(); x++)
         {
-            for (int y = 0; y < gridSize; y++)
+            for (int y = 0; y < gridState.getGridSize(); y++)
             {
-                SquareState squareState = gridState[x][y];
-                if (!squareState.isSolved() && squareState.couldBeSolved())
+                if (!gridState.isSolved(x, y) && gridState.couldBeSolved(x, y))
                 {
                     change = true;
                     removeFromRow(gridState, x, y);
@@ -60,27 +57,27 @@ public class SinglesRule extends AbstractRule
     }
 
     @SuppressWarnings("static-method")
-    private void removeFromRow(SquareState[][] gridState, int x, int y)
+    private void removeFromRow(GridState gridState, int x, int y)
     {
-        int value = gridState[x][y].value();
-        for (int col = 0; col < gridState.length; col++)
+        int value = gridState.value(x, y);
+        for (int col = 0; col < gridState.getGridSize(); col++)
         {
-            if ((col != x) && !gridState[col][y].isSolved())
+            if ((col != x) && !gridState.isSolved(col, y))
             {
-                gridState[col][y].removeValue(value);
+                gridState.removeValue(col, y, value);
             }
         }                
     }
 
     @SuppressWarnings("static-method")
-    private void removeFromColumn(SquareState[][] gridState, int x, int y)
+    private void removeFromColumn(GridState gridState, int x, int y)
     {
-        int value = gridState[x][y].value();
-        for (int row = 0; row < gridState.length; row++)
+        int value = gridState.value(x, y);
+        for (int row = 0; row < gridState.getGridSize(); row++)
         {
-            if ((row != y) && !gridState[x][row].isSolved())
+            if ((row != y) && !gridState.isSolved(x, row))
             {
-                gridState[x][row].removeValue(value);
+                gridState.removeValue(x, row, value);
             }
         }                
     }
@@ -89,6 +86,6 @@ public class SinglesRule extends AbstractRule
     @SuppressWarnings("boxing")
     public String toString()
     {
-        return StringUtil.toString(gridSize, exhausted);
+        return StringUtil.toString(exhausted);
     }
 }

@@ -39,7 +39,7 @@ class FreebiesRule extends AbstractRule
     }
 
     @Override
-    public boolean applyTo(SquareState[][] gridState)
+    public boolean applyTo(GridState gridState)
     {
         if (exhausted)
         {
@@ -48,17 +48,9 @@ class FreebiesRule extends AbstractRule
 
         cages.forEach(cage -> {
             Square square = cage.getSquares().get(0); // There's only ever one square.
-            SquareState state = gridState[square.getX()][square.getY()];
-            for (int value = 1; value <= gridSize; value++)
-            {
-                if (value != cage.getValue())
-                {
-                    state.removeValue(value);
-                }
-            }
             IntStream.rangeClosed(1, gridSize)
                 .filter(value -> value != cage.getValue())
-                .forEach(value -> state.removeValue(value));
+                .forEach(value -> gridState.removeValue(square, value));
         });
         
         exhausted = true;

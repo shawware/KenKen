@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import au.com.shawware.kenken.model.Cage;
@@ -21,6 +20,7 @@ import static au.com.shawware.kenken.model.Cage.DIVIDE;
 import static au.com.shawware.kenken.model.Cage.EQUALS;
 import static au.com.shawware.kenken.model.Cage.MINUS;
 import static au.com.shawware.kenken.model.Cage.PLUS;
+import static au.com.shawware.kenken.model.Cage.TIMES;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
@@ -35,25 +35,19 @@ public class FreebiesRuleTest
 {
     private static final int GRID_SIZE = 3;
 
-    private List<Cage> cages;
-    private SquareState[][] gridState;
-
-    @Before
-    public void setUp()
-    {
-        createGridState(GRID_SIZE);
-
-        cages = new ArrayList<>();
-
-        cages.add(buildCage(GRID_SIZE, PLUS,   5, new int[][] {{0,0},{0,1}}));
-        cages.add(buildCage(GRID_SIZE, DIVIDE, 2, new int[][] {{1,0},{1,1}}));
-        cages.add(buildCage(GRID_SIZE, MINUS,  5, new int[][] {{2,0},{2,1}}));
-    }
-
     @Test
     public void testNoFreebies()
     {
-        ISolvingRule rule = new FreebiesRule(GRID_SIZE, cages);
+        final List<Cage> cages = new ArrayList<>();
+
+        cages.add(buildCage(PLUS,   5, new int[][] {{0,0},{0,1},{0,2}}));
+        cages.add(buildCage(DIVIDE, 2, new int[][] {{1,0},{1,1}}));
+        cages.add(buildCage(MINUS,  5, new int[][] {{2,0},{2,1}}));
+        cages.add(buildCage(TIMES,  8, new int[][] {{1,2},{2,2}}));
+
+        final GridState gridState = new GridState(GRID_SIZE, cages);
+
+        final ISolvingRule rule = new FreebiesRule(GRID_SIZE, cages);
 
         assertTrue(rule.exhausted());
         assertFalse(rule.applyTo(gridState));
@@ -63,31 +57,31 @@ public class FreebiesRuleTest
     @SuppressWarnings("boxing")
     public void testFreebies()
     {
-        cages.add(buildCage(GRID_SIZE, EQUALS, 1, new int[][] {{2,2}}));
-        cages.add(buildCage(GRID_SIZE, EQUALS, 3, new int[][] {{1,2}}));
+        final List<Cage> cages = new ArrayList<>();
 
-        ISolvingRule rule = new FreebiesRule(GRID_SIZE, cages);
+        cages.add(buildCage(PLUS,   5, new int[][] {{0,0},{0,1},{0,2}}));
+        cages.add(buildCage(DIVIDE, 2, new int[][] {{1,0},{1,1}}));
+        cages.add(buildCage(MINUS,  5, new int[][] {{2,0},{2,1}}));
+        cages.add(buildCage(EQUALS, 1, new int[][] {{2,2}}));
+        cages.add(buildCage(EQUALS, 3, new int[][] {{1,2}}));
+
+        final GridState gridState = new GridState(GRID_SIZE, cages);
+
+        final ISolvingRule rule = new FreebiesRule(GRID_SIZE, cages);
 
         assertFalse(rule.exhausted());
         assertTrue(rule.applyTo(gridState));
         assertTrue(rule.exhausted());
         assertFalse(rule.applyTo(gridState));
 
-        assertThat(gridState[2][2].getValues(), equalTo(Collections.singletonList(1)));
-        assertThat(gridState[1][2].getValues(), equalTo(Collections.singletonList(3)));
+        assertThat(gridState.getValues(2, 2), equalTo(Collections.singletonList(1)));
+        assertThat(gridState.getValues(1, 2), equalTo(Collections.singletonList(3)));
     }
 
     
-    private void createGridState(int gridSize)
-    {
-        gridState = new SquareState[gridSize][gridSize];
-    }
-    
-    private Cage buildCage(int gridSize, String operation, int value, int[][] coords)
+    private Cage buildCage(String operation, int value, int[][] coords)
     {
         List<Square> squares = buildSquares(coords);
-        // Fake the initial grid state for the cage's squares.
-        squares.forEach(square -> gridState[square.getX()][square.getY()] = new SquareState(gridSize, square));
         return new Cage(operation, value, squares);
     }
     

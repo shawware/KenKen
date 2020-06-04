@@ -21,12 +21,12 @@ public interface ISolvingRule
 
     /**
      * Apply this rule to the given grid state - which is <em>updated</em> accordingly.
-     * 
+     *
      * @param gridState the current grid state
      * 
      * @return whether apply this rule changed the grid state
      */
-    boolean applyTo(SquareState[][] gridState);
+    boolean applyTo(GridState gridState);
 
     /**
      * @return Whether this rule is exhausted, ie. can no longer help solve the grid.

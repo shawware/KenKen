@@ -15,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.model.Square;
 import au.com.shawware.util.StringUtil;
 
 /**
@@ -34,23 +35,24 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
     
     @Override
     @SuppressWarnings("boxing")
-    List<Set<Integer>> findUnusedValues(Cage cage, List<SquareState> squareStates)
+    List<Set<Integer>> findUnusedValues(Cage cage, GridState gridState)
     {
-        final List<Set<Integer>> unusedValues = new ArrayList<>(squareStates.size());
-        for (int i = 0; i < squareStates.size(); i++)
+        final List<Square> squares = cage.getSquares();
+        final List<Set<Integer>> unusedValues = new ArrayList<>(squares.size());
+        for (int i = 0; i < squares.size(); i++)
         {
             unusedValues.add(new HashSet<>());
         }
 
-        handleTwoOrMoreValues(cage.getValue(), squareStates, unusedValues, operationSupplier.apply(cage.getValue()));
+        handleTwoOrMoreValues(cage.getValue(), squares, unusedValues, gridState, operationSupplier.apply(cage.getValue()));
 
         return unusedValues;
     }
 
     @SuppressWarnings("boxing")
-    private void handleTwoOrMoreValues(int value, List<SquareState> squareStates, List<Set<Integer>> unusedValues, BiFunction<Integer, Integer, Integer> operation)
+    private void handleTwoOrMoreValues(int value, List<Square> squares, List<Set<Integer>> unusedValues, GridState gridState, BiFunction<Integer, Integer, Integer> operation)
     {
-        int numberOfSquares = squareStates.size();
+        int numberOfSquares = squares.size();
 
         RunningTotal[] runningTotal = new RunningTotal[numberOfSquares];
         for (int i = 0; i < numberOfSquares; i++)
@@ -60,20 +62,20 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
 
         for (int i = 0; i < numberOfSquares; i++)
         {
-            List<SquareState> otherSquareStates = new ArrayList<>(numberOfSquares - 1);
+            List<Square> otherSquareStates = new ArrayList<>(numberOfSquares - 1);
             Set<Integer> unused = unusedValues.get(i);
             for (int j = 0; j < numberOfSquares; j++)
             {
                 if (j != i)
                 {
-                    otherSquareStates.add(squareStates.get(j));
+                    otherSquareStates.add(squares.get(j));
                 }
             }
-            SquareState thisSquareState = squareStates.get(i);
-            for (Integer initialValue : thisSquareState.getValues())
+            Square thisSquare = squares.get(i);
+            for (Integer initialValue : gridState.getValues(thisSquare))
             {
-                runningTotal[0].initialise(thisSquareState.getSquare().getX(), thisSquareState.getSquare().getY(), initialValue);
-                if (!findPermutation(value, 0, runningTotal, otherSquareStates, operation))
+                runningTotal[0].initialise(thisSquare.getX(), thisSquare.getY(), initialValue);
+                if (!findPermutation(value, 0, runningTotal, otherSquareStates, gridState, operation))
                 {
                     unused.add(initialValue);
                 }
@@ -83,15 +85,14 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
 
     // TODO: should current index be split into RT index and other values index?
     @SuppressWarnings("boxing")
-    private boolean findPermutation(int total, int currentIndex, RunningTotal[] runningTotal, List<SquareState> otherSquareStates, BiFunction<Integer, Integer, Integer> operation)
+    private boolean findPermutation(int total, int currentIndex, RunningTotal[] runningTotal, List<Square> otherSquares, GridState gridState, BiFunction<Integer, Integer, Integer> operation)
     {
-        // TODO: more advanced check is available than just linear
         boolean found = false;
-        SquareState nextSquareState = otherSquareStates.get(currentIndex);
-        List<Integer> values = nextSquareState.getValues();
+        Square nextSquare = otherSquares.get(currentIndex);
+        List<Integer> values = gridState.getValues(nextSquare);
         for (Integer value : values)
         {
-            if (!thisValueCanBeUsed(value, nextSquareState, currentIndex, runningTotal))
+            if (!thisValueCanBeUsed(value, nextSquare, currentIndex, runningTotal))
             {
                 continue;
             }
@@ -101,9 +102,9 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
             {
                 return false;
             }
-            runningTotal[currentIndex + 1].update(nextSquareState.getSquare().getX(), nextSquareState.getSquare().getY(), value, subTotal);
+            runningTotal[currentIndex + 1].update(nextSquare.getX(), nextSquare.getY(), value, subTotal);
             // TODO: last list
-            if (currentIndex == (otherSquareStates.size() - 1))
+            if (currentIndex == (otherSquares.size() - 1))
             {
                 if (runningTotal[currentIndex + 1].runningTotal == total)
                 {
@@ -112,7 +113,7 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
             }
             else
             {
-                found = findPermutation(total, currentIndex + 1, runningTotal, otherSquareStates, operation);
+                found = findPermutation(total, currentIndex + 1, runningTotal, otherSquares, gridState, operation);
                 if (found)
                 {
                     break;
@@ -123,15 +124,15 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
     }
 
     @SuppressWarnings("static-method")
-    private boolean thisValueCanBeUsed(int value, SquareState nextSquareState, int currentIndex, RunningTotal[] runningTotal)
+    private boolean thisValueCanBeUsed(int value, Square nextSquare, int currentIndex, RunningTotal[] runningTotal)
     {
         boolean canBeUsed = true;
         for (int i = 0; i <= currentIndex; i++)
         {
             if (value == runningTotal[i].value)
             {
-                if ((nextSquareState.getSquare().getX() == runningTotal[i].x) ||
-                    (nextSquareState.getSquare().getY() == runningTotal[i].y))
+                if ((nextSquare.getX() == runningTotal[i].x) ||
+                    (nextSquare.getY() == runningTotal[i].y))
                 {
                     // We're in line with that value so we can't use it.
                     canBeUsed = false;

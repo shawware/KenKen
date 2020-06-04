@@ -8,10 +8,9 @@
 package au.com.shawware.kenken.service.rule;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import au.com.shawware.kenken.model.Square;
 import au.com.shawware.util.StringUtil;
@@ -21,30 +20,24 @@ import au.com.shawware.util.StringUtil;
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
+// TODO: can we eliminate square state entirely
 class SquareState
 {
+//  Does SquareState need to hold the Square - not really
     private final Square square;
     private final Set<Integer> possibleValues;
     private int solution;
     
-    SquareState(int gridSize, Square square)
+    SquareState(Square square, Set<Integer> initialValues)
     {
         this.square = square;
-        this.possibleValues = IntStream
-                .rangeClosed(1, gridSize)
-                .boxed()
-                .collect(Collectors.toSet());
+        this.possibleValues = new HashSet<>(initialValues);
         this.solution = 0;
     }
 
     List<Integer> getValues()
     {
         return new ArrayList<>(possibleValues);
-    }
-
-    Square getSquare()
-    {
-        return square;
     }
 
     @SuppressWarnings("boxing")
