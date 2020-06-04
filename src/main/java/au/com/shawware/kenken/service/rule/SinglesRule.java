@@ -19,10 +19,9 @@ import au.com.shawware.util.StringUtil;
  */
 public class SinglesRule extends AbstractRule
 {
-    @SuppressWarnings("unused")
-    public SinglesRule(int gridSize, List<Cage> cages)
+    public SinglesRule(List<Cage> cages)
     {
-        super("Singles"); //$NON-NLS-1$
+        super("Singles", cages); //$NON-NLS-1$
         this.exhausted = false; // this rule never exhausts
     }
 

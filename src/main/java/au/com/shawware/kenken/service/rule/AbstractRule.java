@@ -7,6 +7,10 @@
 
 package au.com.shawware.kenken.service.rule;
 
+import java.util.List;
+
+import au.com.shawware.kenken.model.Cage;
+
 /**
  * The base class for all rules.
  *
@@ -15,13 +19,16 @@ package au.com.shawware.kenken.service.rule;
 abstract class AbstractRule implements ISolvingRule
 {
     private final String name;
+    protected final List<Cage> cages;
     
+    // TODO: this may be able to become private
     protected boolean exhausted;
 
-    AbstractRule(String name)
+    AbstractRule(String name, List<Cage> cages)
     {
         this.name = name;
-        this.exhausted = false;
+        this.cages = cages;
+        this.exhausted = cages.isEmpty();
     }
 
     @Override

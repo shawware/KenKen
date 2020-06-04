@@ -25,15 +25,16 @@ import static au.com.shawware.kenken.model.Cage.EQUALS;
  */
 class FreebiesRule extends AbstractRule
 {
-    private final List<Cage> cages;
-
     FreebiesRule(List<Cage> cages)
     {
-        super("Freebies"); //$NON-NLS-1$
-        this.cages = cages.stream()
+        super("Freebies", extractCages(cages)); //$NON-NLS-1$
+    }
+
+    private static List<Cage> extractCages(List<Cage> cages)
+    {
+        return cages.stream()
                 .filter(cage -> cage.getOperation().equals(EQUALS))
                 .collect(Collectors.toList());
-        this.exhausted = this.cages.isEmpty();
     }
 
     @Override

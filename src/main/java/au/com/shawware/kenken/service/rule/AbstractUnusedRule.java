@@ -22,20 +22,20 @@ import au.com.shawware.util.StringUtil;
  */
 abstract class AbstractUnusedRule extends AbstractRule
 {
-    private final List<Cage> cages;
-
     AbstractUnusedRule(String name, String operation, List<Cage> cages, boolean sort)
     {
-        super(name);
-
-        this.exhausted = cages.isEmpty();
-        this.cages = cages.stream()
-                        .filter(cage -> cage.getOperation().equals(operation))
-                        .collect(Collectors.toList());
+        super(name, extractCages(cages, operation));
         if (sort)
         {
             this.cages.sort((c1, c2) -> Integer.compare(c1.getSize(), c2.getSize()));
         }
+    }
+
+    private static List<Cage> extractCages(List<Cage> cages, String operation)
+    {
+        return cages.stream()
+                .filter(cage -> cage.getOperation().equals(operation))
+                .collect(Collectors.toList());
     }
 
     @Override
