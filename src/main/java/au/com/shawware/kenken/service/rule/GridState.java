@@ -38,7 +38,7 @@ class GridState
         
         cages.forEach(cage ->
             cage.getSquares().forEach(square ->
-                gridState[square.getX()][square.getY()] = new SquareState(square, initialValues)
+                gridState[square.getX()][square.getY()] = new SquareState(initialValues)
             )
         );
     }

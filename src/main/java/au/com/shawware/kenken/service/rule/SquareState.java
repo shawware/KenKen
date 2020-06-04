@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import au.com.shawware.kenken.model.Square;
 import au.com.shawware.util.StringUtil;
 
 /**
@@ -20,17 +19,13 @@ import au.com.shawware.util.StringUtil;
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
-// TODO: can we eliminate square state entirely
 class SquareState
 {
-//  Does SquareState need to hold the Square - not really
-    private final Square square;
     private final Set<Integer> possibleValues;
     private int solution;
     
-    SquareState(Square square, Set<Integer> initialValues)
+    SquareState(Set<Integer> initialValues)
     {
-        this.square = square;
         this.possibleValues = new HashSet<>(initialValues);
         this.solution = 0;
     }
@@ -86,6 +81,6 @@ class SquareState
     @SuppressWarnings("boxing")
     public String toString()
     {
-        return StringUtil.toString(square, solution, possibleValues);
+        return StringUtil.toString(solution, possibleValues);
     }
 }
