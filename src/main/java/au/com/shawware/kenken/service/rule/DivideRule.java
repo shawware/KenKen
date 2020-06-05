@@ -27,6 +27,6 @@ class DivideRule extends AbstractPairRule
 
     DivideRule(List<Cage> cages)
     {
-        super("Division", DIVIDE, cages, DIVISION); //$NON-NLS-1$
+        super("Division", cages, DIVIDE, DIVISION); //$NON-NLS-1$
     }
 }

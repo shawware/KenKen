@@ -21,9 +21,9 @@ import au.com.shawware.util.StringUtil;
  */
 abstract class AbstractUnusedRule extends AbstractRule
 {
-    AbstractUnusedRule(String name, String operation, List<Cage> cages, boolean sort)
+    AbstractUnusedRule(String name, List<Cage> cages, boolean cagesReady, String operation)
     {
-        super(name, cages, operation, sort);
+        super(name, cages, cagesReady, operation);
     }
 
     @Override

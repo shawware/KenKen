@@ -20,6 +20,6 @@ class PlusRule extends AbstractPlusRule
 {
     PlusRule(List<Cage> cages)
     {
-        super("Plus", cages, true); //$NON-NLS-1$
+        super("Plus", cages, false); //$NON-NLS-1$
     }
 }

@@ -27,6 +27,6 @@ class MinusRule extends AbstractPairRule
 
     MinusRule(List<Cage> cages)
     {
-        super("Minus", MINUS, cages, SUBTRACTION); //$NON-NLS-1$
+        super("Minus", cages, MINUS, SUBTRACTION); //$NON-NLS-1$
     }
 }

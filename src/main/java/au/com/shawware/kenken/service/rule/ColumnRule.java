@@ -20,6 +20,6 @@ class ColumnRule extends AbstractPlusRule
 {
     ColumnRule(List<Cage> cages)
     {
-        super("Column", cages, false); //$NON-NLS-1$
+        super("Column", cages, true); //$NON-NLS-1$
     }
 }

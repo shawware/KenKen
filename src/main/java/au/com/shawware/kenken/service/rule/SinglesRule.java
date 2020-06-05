@@ -20,7 +20,7 @@ public class SinglesRule extends AbstractRule
 {
     public SinglesRule()
     {
-        super("Singles", Collections.emptyList(), "N/A", false); //$NON-NLS-1$ //$NON-NLS-2$
+        super("Singles", Collections.emptyList(), true, "N/A"); //$NON-NLS-1$ //$NON-NLS-2$
         this.exhausted = false; // this rule never exhausts
     }
 

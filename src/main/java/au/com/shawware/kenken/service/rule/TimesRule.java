@@ -27,6 +27,6 @@ class TimesRule extends AbstractPermutationRule
 
     TimesRule(List<Cage> cages)
     {
-        super("Times", TIMES, cages, true, MULTIPLICATION); //$NON-NLS-1$
+        super("Times", cages, false, TIMES, MULTIPLICATION); //$NON-NLS-1$
     }
 }

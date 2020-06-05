@@ -20,6 +20,6 @@ class RowRule extends AbstractPlusRule
 {
     RowRule(List<Cage> cages)
     {
-        super("Row", cages, false); //$NON-NLS-1$
+        super("Row", cages, true); //$NON-NLS-1$
     }
 }

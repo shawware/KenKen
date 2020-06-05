@@ -25,15 +25,15 @@ abstract class AbstractRule implements ISolvingRule
     // TODO: this may be able to become private
     protected boolean exhausted;
 
-    AbstractRule(String name, List<Cage> cages, String operation, boolean sort)
+    AbstractRule(String name, List<Cage> cages, boolean cagesReady, String operation)
     {
         this.name = name;
-        this.cages = filterCages(cages, operation, sort);
+        this.cages = cagesReady ? cages : postProcessCages(cages, operation);
         this.exhausted = this.cages.isEmpty();
     }
 
     @SuppressWarnings({ "static-method", "hiding" })
-    private List<Cage> filterCages(List<Cage> cages, String operation, boolean sort)
+    private List<Cage> postProcessCages(List<Cage> cages, String operation)
     {
         List<Cage> filteredCages = cages;
         if (cages.size() > 0)
@@ -41,10 +41,7 @@ abstract class AbstractRule implements ISolvingRule
             filteredCages = cages.stream()
                 .filter(cage -> cage.getOperation().equals(operation))
                 .collect(Collectors.toList());
-            if (sort)
-            {
-                filteredCages.sort((c1, c2) -> Integer.compare(c1.getSize(), c2.getSize()));
-            }
+            filteredCages.sort((c1, c2) -> Integer.compare(c1.getSize(), c2.getSize()));
         }
         return filteredCages;
     }
