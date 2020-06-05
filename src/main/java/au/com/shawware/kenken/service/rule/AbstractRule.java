@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.util.StringUtil;
 
 /**
  * The base class for all rules.
@@ -22,8 +23,7 @@ abstract class AbstractRule implements ISolvingRule
     private final String name;
     protected final List<Cage> cages;
     
-    // TODO: this may be able to become private
-    protected boolean exhausted;
+    private boolean exhausted;
 
     AbstractRule(String name, List<Cage> cages, boolean cagesReady, String operation)
     {
@@ -47,6 +47,33 @@ abstract class AbstractRule implements ISolvingRule
     }
 
     @Override
+    public final void applyTo(GridState gridState)
+    {
+        if (exhausted)
+        {
+            return;
+        }
+        
+        gridState.markUnchanged();
+
+        applyRuleTo(gridState);
+
+        if (gridState.isChanged())
+        {
+            gridState.processNakedSingles();
+            exhausted = cages.stream().allMatch(cage -> isSolved(cage, gridState));
+        }
+    }
+
+    protected abstract void applyRuleTo(GridState gridState);
+
+    @SuppressWarnings("static-method")
+    protected final boolean isSolved(Cage cage, GridState gridState)
+    {
+        return cage.getSquares().stream().allMatch(square -> gridState.isSolved(square));
+    }
+
+    @Override
     public final boolean exhausted()
     {
         return exhausted;
@@ -56,5 +83,13 @@ abstract class AbstractRule implements ISolvingRule
     public final String name()
     {
         return name;
+    }
+
+
+    @Override
+    @SuppressWarnings("boxing")
+    public String toString()
+    {
+        return StringUtil.toString(name, exhausted, cages);
     }
 }

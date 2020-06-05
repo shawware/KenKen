@@ -28,7 +28,6 @@ public class RuleBasedSolver implements IKenKenSolver
     private final GridState gridState;
     private final List<ISolvingRule> baseSolvingRules;
     private final List<ISolvingRule> extraSolvingRules;
-    private final ISolvingRule singlesRule;
 
     public RuleBasedSolver(GridSpecification specification)
     {
@@ -38,7 +37,6 @@ public class RuleBasedSolver implements IKenKenSolver
         gridState = new GridState(gridSize, cages);
         baseSolvingRules = buildBaseSolvingRules(gridSize, cages);
         extraSolvingRules = buildExtraSolvingRules(cages);
-        singlesRule = new SinglesRule();
     }
 
     private List<ISolvingRule> buildBaseSolvingRules(int gridSize, List<Cage> cages)
@@ -148,13 +146,11 @@ public class RuleBasedSolver implements IKenKenSolver
                 continue;
             }
             System.out.format("Trying rule: %s\n", rule.name());
-            gridState.markUnchanged();
             rule.applyTo(gridState);
             if (gridState.isChanged())
             {
                 change = true;
                 System.out.format("Rule changed the state: %s\n", rule.name());
-                singlesRule.applyTo(gridState);
             }
             System.out.format("After rule %s: %s\n", rule.name(), gridState);
         }

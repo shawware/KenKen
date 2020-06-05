@@ -27,45 +27,26 @@ abstract class AbstractUnusedRule extends AbstractRule
     }
 
     @Override
-    public final void applyTo(GridState gridState)
+    protected void applyRuleTo(GridState gridState)
     {
-        if (exhausted)
-        {
-            return;
-        }
-
-        boolean change = false;
         for (Cage cage : cages)
         {
-            if (!isSolved(cage, gridState) && solveCage(cage, gridState))
+            if (!isSolved(cage, gridState))
             {
-                change = true;
+                solveCage(cage, gridState);
             }
         }
-
-        if (change)
-        {
-            exhausted = cages.stream().allMatch(cage -> isSolved(cage, gridState));
-        }
     }
 
-    @SuppressWarnings("static-method")
-    private boolean isSolved(Cage cage, GridState gridState)
-    {
-        return cage.getSquares().stream().allMatch(square -> gridState.isSolved(square));
-    }
-
-    private boolean solveCage(Cage cage, GridState gridState)
+    private void solveCage(Cage cage, GridState gridState)
     {
         List<Square> squares = cage.getSquares();
         List<Set<Integer>> unusedValues = findUnusedValues(cage, gridState);
-        boolean change = false;
         for (int i = 0; i < unusedValues.size(); i++)
         {
             Set<Integer> unused = unusedValues.get(i);
             if (!unused.isEmpty())
             {
-                change = true;
                 Square square = squares.get(i);
                 if (!gridState.isSolved(square))
                 {
@@ -74,8 +55,6 @@ abstract class AbstractUnusedRule extends AbstractRule
                 }
             }
         }
-
-        return change;
     }
     
     // Package visibility for testing

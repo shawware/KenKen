@@ -12,7 +12,6 @@ import java.util.stream.IntStream;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Square;
-import au.com.shawware.util.StringUtil;
 
 import static au.com.shawware.kenken.model.Cage.EQUALS;
 
@@ -30,27 +29,13 @@ class FreebiesRule extends AbstractRule
     }
 
     @Override
-    public void applyTo(GridState gridState)
+    protected void applyRuleTo(GridState gridState)
     {
-        if (exhausted)
-        {
-            return;
-        }
-
         cages.forEach(cage -> {
             Square square = cage.getSquares().get(0); // There's only ever one square.
             IntStream.rangeClosed(1, gridState.getGridSize())
                 .filter(value -> value != cage.getValue())
                 .forEach(value -> gridState.removeValue(square, value));
         });
-        
-        exhausted = true;
-    }
-
-    @Override
-    @SuppressWarnings("boxing")
-    public String toString()
-    {
-        return StringUtil.toString(exhausted, cages);
     }
 }

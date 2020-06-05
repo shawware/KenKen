@@ -93,7 +93,6 @@ class GridState
     {
         gridState[square.getX()][square.getY()].solve();
         changed = true;
-
     }
 
     boolean isSolved(Square square)
@@ -101,19 +100,9 @@ class GridState
         return isSolved(square.getX(), square.getY());
     }
 
-    boolean isSolved(int x, int y)
+    private boolean isSolved(int x, int y)
     {
         return gridState[x][y].isSolved();
-    }
-
-    boolean couldBeSolved(int x, int y)
-    {
-        boolean couldBeSolved = gridState[x][y].couldBeSolved();
-        if (couldBeSolved)
-        {
-            changed = true;
-        }
-        return couldBeSolved;
     }
 
     boolean isSolved()
@@ -147,10 +136,60 @@ class GridState
         return solution;
     }
 
+    void processNakedSingles()
+    {
+        while (processSingleValues())
+        {
+            // Do nothing - keep going until done
+        }
+    }
+
+    private boolean processSingleValues()
+    {
+        boolean change = false;
+        for (int x = 0; x < gridSize; x++)
+        {
+            for (int y = 0; y < gridSize; y++)
+            {
+                if (!isSolved(x, y) && gridState[x][y].couldBeSolved())
+                {
+                    change = true;
+                    removeFromRow(x, y);
+                    removeFromColumn(x, y);
+                }
+            }
+        }
+        return change;
+    }
+
+    private void removeFromRow(int x, int y)
+    {
+        int value = value(x, y);
+        for (int col = 0; col < gridSize; col++)
+        {
+            if ((col != x) && !isSolved(col, y))
+            {
+                removeValue(col, y, value);
+            }
+        }                
+    }
+
+    private void removeFromColumn(int x, int y)
+    {
+        int value = value(x, y);
+        for (int row = 0; row < gridSize; row++)
+        {
+            if ((row != y) && !isSolved(x, row))
+            {
+                removeValue(x, row, value);
+            }
+        }                
+    }
+   
     @Override
     @SuppressWarnings("boxing")
     public String toString()
     {
-        return StringUtil.toString(gridSize, gridState);
+        return StringUtil.toString(gridSize, changed, gridState);
     }
 }
