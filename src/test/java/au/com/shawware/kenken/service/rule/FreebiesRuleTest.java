@@ -50,7 +50,8 @@ public class FreebiesRuleTest
         final ISolvingRule rule = new FreebiesRule(cages);
 
         assertTrue(rule.exhausted());
-        assertFalse(rule.applyTo(gridState));
+        rule.applyTo(gridState);
+        assertFalse(gridState.isChanged());
     }
 
     @Test
@@ -70,9 +71,12 @@ public class FreebiesRuleTest
         final ISolvingRule rule = new FreebiesRule(cages);
 
         assertFalse(rule.exhausted());
-        assertTrue(rule.applyTo(gridState));
-        assertTrue(rule.exhausted());
-        assertFalse(rule.applyTo(gridState));
+        rule.applyTo(gridState);
+        assertTrue(gridState.isChanged());
+
+        gridState.markUnchanged();
+        rule.applyTo(gridState);
+        assertFalse(gridState.isChanged());
 
         assertThat(gridState.getValues(new Square(2, 2)), equalTo(Collections.singletonList(1)));
         assertThat(gridState.getValues(new Square(1, 2)), equalTo(Collections.singletonList(3)));

@@ -25,15 +25,12 @@ public class SinglesRule extends AbstractRule
     }
 
     @Override
-    public boolean applyTo(GridState gridState)
+    public void applyTo(GridState gridState)
     {
-        int count = 0;
         while (processSingleValues(gridState))
         {
             // Nothing to do - keep going until all possible changes have been made.
-            count++;
         }
-        return (count > 0);
     }
 
     private boolean processSingleValues(GridState gridState)

@@ -27,11 +27,11 @@ abstract class AbstractUnusedRule extends AbstractRule
     }
 
     @Override
-    public final boolean applyTo(GridState gridState)
+    public final void applyTo(GridState gridState)
     {
         if (exhausted)
         {
-            return false;
+            return;
         }
 
         boolean change = false;
@@ -47,8 +47,6 @@ abstract class AbstractUnusedRule extends AbstractRule
         {
             exhausted = cages.stream().allMatch(cage -> isSolved(cage, gridState));
         }
-
-        return change;
     }
 
     @SuppressWarnings("static-method")

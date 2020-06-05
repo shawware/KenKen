@@ -30,11 +30,11 @@ class FreebiesRule extends AbstractRule
     }
 
     @Override
-    public boolean applyTo(GridState gridState)
+    public void applyTo(GridState gridState)
     {
         if (exhausted)
         {
-            return false;
+            return;
         }
 
         cages.forEach(cage -> {
@@ -45,7 +45,6 @@ class FreebiesRule extends AbstractRule
         });
         
         exhausted = true;
-        return true;
     }
 
     @Override

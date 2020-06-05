@@ -25,6 +25,8 @@ class GridState
 {
     private final int gridSize;
     private final SquareState[][] gridState;
+    
+    private boolean changed;
 
     GridState(int gridSize, List<Cage> cages)
     {
@@ -41,11 +43,23 @@ class GridState
                 gridState[square.getX()][square.getY()] = new SquareState(initialValues)
             )
         );
+        
+        this.changed = false;
     }
 
     int getGridSize()
     {
         return gridSize;
+    }
+    
+    void markUnchanged()
+    {
+        changed = false;
+    }
+    
+    boolean isChanged()
+    {
+        return changed;
     }
 
     List<Integer> getValues(Square square)
@@ -61,11 +75,13 @@ class GridState
     void removeValue(int x, int y, int value)
     {
         gridState[x][y].removeValue(value);
+        changed = true;
     }
 
     void removeValues(Square square, Set<Integer> values)
     {
         gridState[square.getX()][square.getY()].removeValues(values);
+        changed = true;
     }
 
     int value(int x, int y)
@@ -76,6 +92,8 @@ class GridState
     void solve(Square square)
     {
         gridState[square.getX()][square.getY()].solve();
+        changed = true;
+
     }
 
     boolean isSolved(Square square)
@@ -90,7 +108,12 @@ class GridState
 
     boolean couldBeSolved(int x, int y)
     {
-        return gridState[x][y].couldBeSolved();
+        boolean couldBeSolved = gridState[x][y].couldBeSolved();
+        if (couldBeSolved)
+        {
+            changed = true;
+        }
+        return couldBeSolved;
     }
 
     boolean isSolved()

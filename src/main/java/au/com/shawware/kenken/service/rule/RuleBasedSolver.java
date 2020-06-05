@@ -148,7 +148,9 @@ public class RuleBasedSolver implements IKenKenSolver
                 continue;
             }
             System.out.format("Trying rule: %s\n", rule.name());
-            if (rule.applyTo(gridState))
+            gridState.markUnchanged();
+            rule.applyTo(gridState);
+            if (gridState.isChanged())
             {
                 change = true;
                 System.out.format("Rule changed the state: %s\n", rule.name());
