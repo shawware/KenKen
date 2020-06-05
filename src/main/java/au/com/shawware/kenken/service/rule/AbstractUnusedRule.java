@@ -23,11 +23,7 @@ abstract class AbstractUnusedRule extends AbstractRule
 {
     AbstractUnusedRule(String name, String operation, List<Cage> cages, boolean sort)
     {
-        super(name, cages, operation);
-        if (sort)
-        {
-            this.cages.sort((c1, c2) -> Integer.compare(c1.getSize(), c2.getSize()));
-        }
+        super(name, cages, operation, sort);
     }
 
     @Override

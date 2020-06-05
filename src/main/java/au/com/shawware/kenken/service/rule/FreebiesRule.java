@@ -26,7 +26,7 @@ class FreebiesRule extends AbstractRule
 {
     FreebiesRule(List<Cage> cages)
     {
-        super("Freebies", cages, EQUALS); //$NON-NLS-1$
+        super("Freebies", cages, EQUALS, false); //$NON-NLS-1$
     }
 
     @Override
