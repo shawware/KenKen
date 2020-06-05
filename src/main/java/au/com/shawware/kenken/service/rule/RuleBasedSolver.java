@@ -38,7 +38,7 @@ public class RuleBasedSolver implements IKenKenSolver
         gridState = new GridState(gridSize, cages);
         baseSolvingRules = buildBaseSolvingRules(gridSize, cages);
         extraSolvingRules = buildExtraSolvingRules(cages);
-        singlesRule = new SinglesRule(cages);
+        singlesRule = new SinglesRule();
     }
 
     private List<ISolvingRule> buildBaseSolvingRules(int gridSize, List<Cage> cages)

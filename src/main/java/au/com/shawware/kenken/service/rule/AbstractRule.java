@@ -8,6 +8,7 @@
 package au.com.shawware.kenken.service.rule;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import au.com.shawware.kenken.model.Cage;
 
@@ -24,11 +25,24 @@ abstract class AbstractRule implements ISolvingRule
     // TODO: this may be able to become private
     protected boolean exhausted;
 
-    AbstractRule(String name, List<Cage> cages)
+    AbstractRule(String name, List<Cage> cages, String operation)
     {
         this.name = name;
-        this.cages = cages;
-        this.exhausted = cages.isEmpty();
+        this.cages = filterCages(cages, operation);
+        this.exhausted = this.cages.isEmpty();
+    }
+
+    @SuppressWarnings("static-method")
+    private List<Cage> filterCages(List<Cage> cages, String operation)
+    {
+        List<Cage> filteredCages = cages;
+        if (cages.size() > 0)
+        {
+            filteredCages = cages.stream()
+                .filter(cage -> cage.getOperation().equals(operation))
+                .collect(Collectors.toList());
+        }
+        return filteredCages;
     }
 
     @Override

@@ -7,9 +7,8 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.List;
+import java.util.Collections;
 
-import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.util.StringUtil;
 
 /**
@@ -19,9 +18,9 @@ import au.com.shawware.util.StringUtil;
  */
 public class SinglesRule extends AbstractRule
 {
-    public SinglesRule(List<Cage> cages)
+    public SinglesRule()
     {
-        super("Singles", cages); //$NON-NLS-1$
+        super("Singles", Collections.emptyList(), "N/A"); //$NON-NLS-1$ //$NON-NLS-2$
         this.exhausted = false; // this rule never exhausts
     }
 

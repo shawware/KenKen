@@ -9,7 +9,6 @@ package au.com.shawware.kenken.service.rule;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Square;
@@ -24,18 +23,11 @@ abstract class AbstractUnusedRule extends AbstractRule
 {
     AbstractUnusedRule(String name, String operation, List<Cage> cages, boolean sort)
     {
-        super(name, extractCages(cages, operation));
+        super(name, cages, operation);
         if (sort)
         {
             this.cages.sort((c1, c2) -> Integer.compare(c1.getSize(), c2.getSize()));
         }
-    }
-
-    private static List<Cage> extractCages(List<Cage> cages, String operation)
-    {
-        return cages.stream()
-                .filter(cage -> cage.getOperation().equals(operation))
-                .collect(Collectors.toList());
     }
 
     @Override
