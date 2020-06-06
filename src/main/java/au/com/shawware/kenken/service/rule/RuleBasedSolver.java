@@ -26,8 +26,7 @@ import static au.com.shawware.kenken.model.Cage.PLUS;
 public class RuleBasedSolver implements IKenKenSolver
 {
     private final GridState gridState;
-    private final List<ISolvingRule> baseSolvingRules;
-    private final List<ISolvingRule> extraSolvingRules;
+    private final RuleEngine ruleEngine;
 
     public RuleBasedSolver(GridSpecification specification)
     {
@@ -35,8 +34,10 @@ public class RuleBasedSolver implements IKenKenSolver
         final List<Cage> cages = specification.getCages();
 
         gridState = new GridState(gridSize, cages);
-        baseSolvingRules = buildBaseSolvingRules(gridSize, cages);
-        extraSolvingRules = buildExtraSolvingRules(cages);
+        ruleEngine = new RuleEngine(
+                buildBaseSolvingRules(gridSize, cages),
+                buildExtraSolvingRules(cages)
+        );
     }
 
     private List<ISolvingRule> buildBaseSolvingRules(int gridSize, List<Cage> cages)
@@ -116,42 +117,7 @@ public class RuleBasedSolver implements IKenKenSolver
     @Override
     public void solve()
     {
-        int maxAttempts = extraSolvingRules.size() + 1;
-        while (maxAttempts > 0)
-        {
-            while (applyRules())
-            {
-                // Keep going until the grid is solved or the rules stop having an effect
-            }
-            if (gridIsSolved())
-            {
-                break;
-            }
-            maxAttempts--;
-            if (!extraSolvingRules.isEmpty())
-            {
-                baseSolvingRules.add(extraSolvingRules.remove(0));
-            }
-        }
-    }
-
-    private boolean applyRules()
-    {
-        boolean change = false;
-        for (ISolvingRule rule : baseSolvingRules)
-        {
-            System.out.format("Trying rule: %s\n", rule.name());
-            gridState.markUnchanged();
-            rule.applyTo(gridState);
-            if (gridState.isChanged())
-            {
-                gridState.processNakedSingles();
-                change = true;
-                System.out.format("Rule changed the state: %s\n", rule.name());
-            }
-            System.out.format("After rule %s: %s\n", rule.name(), gridState);
-        }
-        return change;
+        ruleEngine.solve(gridState);
     }
 
     @Override

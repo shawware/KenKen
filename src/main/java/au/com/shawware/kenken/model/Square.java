@@ -43,6 +43,35 @@ public class Square
     }
 
     @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + x;
+        result = prime * result + y;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj instanceof Square)
+        {
+            Square that = (Square)obj;
+            return this.x == that.x && this.y == that.y;
+        }
+        return false;
+    }
+
+    @Override
     @SuppressWarnings("boxing")
     public String toString()
     {

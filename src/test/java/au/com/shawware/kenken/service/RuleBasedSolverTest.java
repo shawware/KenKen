@@ -96,6 +96,7 @@ public class RuleBasedSolverTest extends AbstractBaseTest
         testProblem("kk-7x7-p1.json", "7432561,2761345,4317652,5243716,3654127,1576234,6125473");
     }
 
+    @SuppressWarnings("boxing")
     private void testProblem(String filename, String expectedSolution) throws IOException
     {
         GridSpecification specification = loadAndVerifyGridSpecification(filename);
@@ -103,7 +104,10 @@ public class RuleBasedSolverTest extends AbstractBaseTest
         IKenKenSolver solver = new RuleBasedSolver(specification);
 
         solver.solve();
-        
+
+        boolean solvable = !expectedSolution.contains("-");
+        assertEquals(solvable, solver.gridIsSolved());
+
         Grid grid = new Grid(solver.solution());
 
         IGridVisitor visitor = new StringGridVisitor(',');
