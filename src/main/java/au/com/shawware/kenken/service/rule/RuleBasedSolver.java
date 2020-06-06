@@ -140,15 +140,12 @@ public class RuleBasedSolver implements IKenKenSolver
         boolean change = false;
         for (ISolvingRule rule : baseSolvingRules)
         {
-            if (rule.exhausted())
-            {
-                System.out.format("Rule exhausted: %s\n", rule.name());
-                continue;
-            }
             System.out.format("Trying rule: %s\n", rule.name());
+            gridState.markUnchanged();
             rule.applyTo(gridState);
             if (gridState.isChanged())
             {
+                gridState.processNakedSingles();
                 change = true;
                 System.out.format("Rule changed the state: %s\n", rule.name());
             }

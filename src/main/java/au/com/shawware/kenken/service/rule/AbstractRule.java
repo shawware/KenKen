@@ -53,15 +53,12 @@ abstract class AbstractRule implements ISolvingRule
         {
             return;
         }
-        
-        gridState.markUnchanged();
 
-        applyRuleTo(gridState);
+        exhausted = cages.stream().allMatch(cage -> isSolved(cage, gridState));
 
-        if (gridState.isChanged())
+        if (!exhausted)
         {
-            gridState.processNakedSingles();
-            exhausted = cages.stream().allMatch(cage -> isSolved(cage, gridState));
+            applyRuleTo(gridState);
         }
     }
 

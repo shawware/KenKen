@@ -73,6 +73,7 @@ public class FreebiesRuleTest
         assertFalse(rule.exhausted());
         rule.applyTo(gridState);
         assertTrue(gridState.isChanged());
+        gridState.processNakedSingles();
 
         gridState.markUnchanged();
         rule.applyTo(gridState);
