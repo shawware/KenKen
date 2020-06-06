@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
-public class FreebiesRuleTest
+public class FreebiesRuleTest extends AbstractBaseTest
 {
     private static final int GRID_SIZE = 3;
 
@@ -79,23 +79,5 @@ public class FreebiesRuleTest
 
         assertThat(gridState.getValues(new Square(2, 2)), equalTo(Collections.singletonList(1)));
         assertThat(gridState.getValues(new Square(1, 2)), equalTo(Collections.singletonList(3)));
-    }
-
-    
-    private Cage buildCage(String operation, int value, int[][] coords)
-    {
-        List<Square> squares = buildSquares(coords);
-        return new Cage(operation, value, squares);
-    }
-    
-    @SuppressWarnings("static-method")
-    private List<Square> buildSquares(int[][] coords)
-    {
-        List<Square> squares = new ArrayList<>();
-        for (int[] pair : coords)
-        {
-            squares.add(new Square(pair[0], pair[1]));
-        }
-        return squares;
     }
 }
