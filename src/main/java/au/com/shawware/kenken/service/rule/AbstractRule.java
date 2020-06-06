@@ -71,17 +71,10 @@ abstract class AbstractRule implements ISolvingRule
     }
 
     @Override
-    public final boolean exhausted()
-    {
-        return exhausted;
-    }
-
-    @Override
     public final String name()
     {
         return name;
     }
-
 
     @Override
     @SuppressWarnings("boxing")

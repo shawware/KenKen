@@ -12,7 +12,6 @@ import java.util.Set;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Square;
-import au.com.shawware.util.StringUtil;
 
 /**
  * Base class and template for rules that work on finding un-used values.
@@ -59,10 +58,4 @@ abstract class AbstractUnusedRule extends AbstractRule
     
     // Package visibility for testing
     abstract List<Set<Integer>> findUnusedValues(Cage cage, GridState gridState);
-
-    @Override
-    public String toString()
-    {
-        return StringUtil.toString(cages);
-    }
 }

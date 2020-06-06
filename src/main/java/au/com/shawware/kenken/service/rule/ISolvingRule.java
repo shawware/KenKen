@@ -27,9 +27,4 @@ public interface ISolvingRule
      * @return whether apply this rule changed the grid state
      */
     void applyTo(GridState gridState);
-
-    /**
-     * @return Whether this rule is exhausted, ie. can no longer help solve the grid.
-     */
-    boolean exhausted();
 }

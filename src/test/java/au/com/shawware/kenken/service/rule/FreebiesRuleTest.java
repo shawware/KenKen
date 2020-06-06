@@ -49,7 +49,6 @@ public class FreebiesRuleTest
 
         final ISolvingRule rule = new FreebiesRule(cages);
 
-        assertTrue(rule.exhausted());
         rule.applyTo(gridState);
         assertFalse(gridState.isChanged());
     }
@@ -70,7 +69,6 @@ public class FreebiesRuleTest
 
         final ISolvingRule rule = new FreebiesRule(cages);
 
-        assertFalse(rule.exhausted());
         rule.applyTo(gridState);
         assertTrue(gridState.isChanged());
         gridState.processNakedSingles();
