@@ -37,22 +37,29 @@ class TriplesRule extends AbstractPlusRule
         for (int i = 0; i < cages.size(); i++)
         {
             Cage c1 = cages.get(i);
+            if (!c1.getOperation().equals(PLUS))
+            {
+                continue;
+            }
             for (int j = i + 1; j < cages.size(); j++)
             {
                 Cage c2 = cages.get(j);
+                if (!c2.getOperation().equals(PLUS))
+                {
+                    continue;
+                }
                 for (int k = j + 1; k < cages.size(); k++)
                 {
                     Cage c3 = cages.get(k);
-                    if (c1.getOperation().equals(PLUS) &&
-                        c2.getOperation().equals(PLUS) &&
-                        c3.getOperation().equals(PLUS))
+                    if (!c3.getOperation().equals(PLUS))
                     {
-                        List<Square> squares = new ArrayList<>();
-                        squares.addAll(c1.getSquares());
-                        squares.addAll(c2.getSquares());
-                        squares.addAll(c3.getSquares());
-                        triples.add(new Cage(PLUS, c1.getValue() + c2.getValue() + c3.getValue(), squares));
+                        continue;
                     }
+                    List<Square> squares = new ArrayList<>();
+                    squares.addAll(c1.getSquares());
+                    squares.addAll(c2.getSquares());
+                    squares.addAll(c3.getSquares());
+                    triples.add(new Cage(PLUS, c1.getValue() + c2.getValue() + c3.getValue(), squares));
                 }
             }
         }        

@@ -37,16 +37,21 @@ class PairsRule extends AbstractPlusRule
         for (int i = 0; i < cages.size(); i++)
         {
             Cage c1 = cages.get(i);
+            if (!c1.getOperation().equals(PLUS))
+            {
+                continue;
+            }
             for (int j = i + 1; j < cages.size(); j++)
             {
                 Cage c2 = cages.get(j);
-                if (c1.getOperation().equals(PLUS) && c2.getOperation().equals(PLUS))
+                if (!c2.getOperation().equals(PLUS))
                 {
-                    List<Square> squares = new ArrayList<>();
-                    squares.addAll(c1.getSquares());
-                    squares.addAll(c2.getSquares());
-                    pairs.add(new Cage(PLUS, c1.getValue() + c2.getValue(), squares));
+                    continue;
                 }
+                List<Square> squares = new ArrayList<>();
+                squares.addAll(c1.getSquares());
+                squares.addAll(c2.getSquares());
+                pairs.add(new Cage(PLUS, c1.getValue() + c2.getValue(), squares));
             }
         }
         
