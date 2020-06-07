@@ -7,11 +7,8 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import au.com.shawware.kenken.model.Cage;
 
 import static au.com.shawware.kenken.model.Cage.DIVIDE;
 
@@ -25,8 +22,8 @@ class DivideRule extends AbstractPairRule
     @SuppressWarnings("boxing")
     private static final Function<Integer, BiFunction<Integer, Integer, Boolean>> DIVISION = value -> (i1, i2) -> (i1 / i2 == value && i1 % i2 == 0) || (i2 / i1 == value && i2 % i1 == 0);
 
-    DivideRule(List<Cage> cages)
+    DivideRule()
     {
-        super("Division", cages, DIVIDE, DIVISION); //$NON-NLS-1$
+        super("Division", DIVIDE, DIVISION); //$NON-NLS-1$
     }
 }

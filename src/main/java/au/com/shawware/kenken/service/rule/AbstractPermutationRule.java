@@ -27,9 +27,9 @@ abstract class AbstractPermutationRule extends AbstractUnusedRule
 {
     private final Function<Integer, BiFunction<Integer, Integer, Integer>> operationSupplier;
 
-    AbstractPermutationRule(String name, List<Cage> cages, boolean cagesReady, String operation, Function<Integer, BiFunction<Integer, Integer, Integer>> operationSupplier)
+    AbstractPermutationRule(String name, String operation, boolean filterCages, boolean sortCages, Function<Integer, BiFunction<Integer, Integer, Integer>> operationSupplier)
     {
-        super(name, cages, cagesReady, operation);
+        super(name, operation, filterCages, sortCages);
         this.operationSupplier = operationSupplier;
     }
     

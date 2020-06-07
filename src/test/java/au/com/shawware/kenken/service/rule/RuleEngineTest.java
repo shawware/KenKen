@@ -42,6 +42,9 @@ public class RuleEngineTest extends AbstractBaseTest
     @Mock
     private GridState gridState;
 
+    private int gridSize;
+    private List<Cage> cages;
+
     private TestRule rule1;
     private TestRule rule2;
     private TestRule rule3;
@@ -54,15 +57,16 @@ public class RuleEngineTest extends AbstractBaseTest
     @Before
     public void setUp()
     {
-        List<Cage> cages = Arrays.asList(
+        gridSize = 3;
+        cages = Arrays.asList(
                 buildCage(EQUALS, 1, new int[][] {{ 0, 0 }}),
                 buildCage(PLUS,   2, new int[][] {{ 1, 0 }, {1, 1}}),
                 buildCage(TIMES,  3, new int[][] {{ 0, 1 }, {0, 2}})
         );
 
-        rule1 = new TestRule("Test1", cages, false, EQUALS);
-        rule2 = new TestRule("Test2", cages, false, PLUS);
-        rule3 = new TestRule("Test3", cages, false, TIMES);
+        rule1 = new TestRule("Test1", EQUALS, true, false);
+        rule2 = new TestRule("Test2", PLUS,   true, false);
+        rule3 = new TestRule("Test3", TIMES,  true, false);
 
         baseRules = new ArrayList<>();
         baseRules.add(rule1);
@@ -77,7 +81,7 @@ public class RuleEngineTest extends AbstractBaseTest
     @Test
     public void testEngineWhenUnsolvable()
     {
-        ruleEngine.solve(gridState);
+        ruleEngine.solve(gridSize, cages, gridState);
 
         assertEquals(2, rule1.getExecutionCount());
         assertEquals(2, rule2.getExecutionCount());
@@ -94,7 +98,7 @@ public class RuleEngineTest extends AbstractBaseTest
         when(gridState.isSolved()).thenReturn(true);
         when(gridState.isSolved(any())).thenReturn(false, true, false, true);
 
-        ruleEngine.solve(gridState);
+        ruleEngine.solve(gridSize, cages, gridState);
 
         assertEquals(1, rule1.getExecutionCount());
         assertEquals(1, rule2.getExecutionCount());
@@ -114,7 +118,7 @@ public class RuleEngineTest extends AbstractBaseTest
         when(gridState.isSolved(new Square(0,1))).thenReturn(false, true);
         when(gridState.isSolved(new Square(0,2))).thenReturn(false, true);
 
-        ruleEngine.solve(gridState);
+        ruleEngine.solve(gridSize, cages, gridState);
 
         assertEquals(1, rule1.getExecutionCount());
         assertEquals(4, rule2.getExecutionCount());

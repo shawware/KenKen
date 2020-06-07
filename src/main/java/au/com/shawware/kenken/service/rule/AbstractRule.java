@@ -7,6 +7,7 @@
 
 package au.com.shawware.kenken.service.rule;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,29 +22,49 @@ import au.com.shawware.util.StringUtil;
 abstract class AbstractRule implements ISolvingRule
 {
     private final String name;
-    protected final List<Cage> cages;
+    private final boolean filterCages;
+    private final boolean sortCages;
+    private final String operation;
     
+    protected List<Cage> cages;
     private boolean exhausted;
 
-    AbstractRule(String name, List<Cage> cages, boolean cagesReady, String operation)
+    AbstractRule(String name, String operation, boolean filterCages, boolean sortCages)
     {
         this.name = name;
-        this.cages = cagesReady ? cages : postProcessCages(cages, operation);
+        this.operation = operation;
+        this.filterCages = filterCages;
+        this.sortCages = sortCages;
+        this.cages = Collections.emptyList();
+        this.exhausted = true;
+    }
+
+    @Override
+    @SuppressWarnings("hiding")
+    public final void initialise(int gridSize, List<Cage> cages, GridState gridState)
+    {
+        List<Cage> generatedCages = generateCages(gridSize, cages, gridState);
+        if (filterCages)
+        {
+            generatedCages = cages.stream()
+                    .filter(cage -> cage.getOperation().equals(operation))
+                    .collect(Collectors.toList());
+        }
+        if (sortCages)
+        {
+            generatedCages.sort((c1, c2) -> Integer.compare(c1.getSize(), c2.getSize()));
+        }
+        this.cages = Collections.unmodifiableList(generatedCages);
         this.exhausted = this.cages.isEmpty();
     }
 
-    @SuppressWarnings({ "static-method", "hiding" })
-    private List<Cage> postProcessCages(List<Cage> cages, String operation)
+    /*
+     * Subclasses should override if they want something other than the specification's cages.
+     */
+    @SuppressWarnings({ "static-method", "hiding", "unused" })
+    protected List<Cage> generateCages(int gridSize, List<Cage> cages, GridState gridState)
     {
-        List<Cage> filteredCages = cages;
-        if (cages.size() > 0)
-        {
-            filteredCages = cages.stream()
-                .filter(cage -> cage.getOperation().equals(operation))
-                .collect(Collectors.toList());
-            filteredCages.sort((c1, c2) -> Integer.compare(c1.getSize(), c2.getSize()));
-        }
-        return filteredCages;
+        return cages;
     }
 
     @Override

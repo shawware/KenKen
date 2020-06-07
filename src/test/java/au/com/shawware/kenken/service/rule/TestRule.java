@@ -20,9 +20,9 @@ public class TestRule extends AbstractRule
 {
     private int executionCount;
     
-    public TestRule(String name, List<Cage> cages, boolean cagesReady, String operation)
+    public TestRule(String name, String operation, boolean filterCages, boolean sortCages)
     {
-        super(name, cages, cagesReady, operation);
+        super(name, operation, filterCages, sortCages);
         executionCount = 0;
     }
 

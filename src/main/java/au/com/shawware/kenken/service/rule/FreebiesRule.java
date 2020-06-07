@@ -7,10 +7,8 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
-import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Square;
 
 import static au.com.shawware.kenken.model.Cage.EQUALS;
@@ -23,9 +21,9 @@ import static au.com.shawware.kenken.model.Cage.EQUALS;
  */
 class FreebiesRule extends AbstractRule
 {
-    FreebiesRule(List<Cage> cages)
+    FreebiesRule()
     {
-        super("Freebies", cages, false, EQUALS); //$NON-NLS-1$
+        super("Freebies", EQUALS, true, false); //$NON-NLS-1$
     }
 
     @Override

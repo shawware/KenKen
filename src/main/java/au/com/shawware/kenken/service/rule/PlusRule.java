@@ -7,10 +7,6 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.List;
-
-import au.com.shawware.kenken.model.Cage;
-
 /**
  * Solves cages with the addition operation.
  *
@@ -18,8 +14,8 @@ import au.com.shawware.kenken.model.Cage;
  */
 class PlusRule extends AbstractPlusRule
 {
-    PlusRule(List<Cage> cages)
+    PlusRule()
     {
-        super("Plus", cages, false); //$NON-NLS-1$
+        super("Plus", true, true); //$NON-NLS-1$
     }
 }

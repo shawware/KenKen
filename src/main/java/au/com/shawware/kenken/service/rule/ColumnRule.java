@@ -7,19 +7,39 @@
 
 package au.com.shawware.kenken.service.rule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.model.Square;
+
+import static au.com.shawware.kenken.model.Cage.PLUS;
 
 /**
  * A rule that solves a grid's columns.
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
-class ColumnRule extends AbstractPlusRule
+class ColumnRule extends AbstractLineRule
 {
-    ColumnRule(List<Cage> cages)
+    ColumnRule()
     {
-        super("Column", cages, true); //$NON-NLS-1$
+        super("Column"); //$NON-NLS-1$
+    }
+
+    @Override
+    List<Cage> buildLines(int gridSize, int sum, Square[][] grid)
+    {
+        List<Cage> columns = new ArrayList<>(gridSize);
+        for (int x = 0; x < gridSize; x++)
+        {
+            List<Square> squares = new ArrayList<>(gridSize);
+            for (int y = 0; y < gridSize; y++)
+            {
+                squares.add(grid[x][y]);
+            }
+            columns.add(new Cage(PLUS, sum, squares));
+        }
+        return columns;
     }
 }

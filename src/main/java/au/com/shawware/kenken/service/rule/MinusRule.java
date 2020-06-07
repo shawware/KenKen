@@ -7,11 +7,8 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import au.com.shawware.kenken.model.Cage;
 
 import static au.com.shawware.kenken.model.Cage.MINUS;
 
@@ -25,8 +22,8 @@ class MinusRule extends AbstractPairRule
     @SuppressWarnings("boxing")
     private static final Function<Integer, BiFunction<Integer, Integer, Boolean>> SUBTRACTION = value -> (i1, i2) -> (Math.abs(i1 - i2) == value);
 
-    MinusRule(List<Cage> cages)
+    MinusRule()
     {
-        super("Minus", cages, MINUS, SUBTRACTION); //$NON-NLS-1$
+        super("Minus", MINUS, SUBTRACTION); //$NON-NLS-1$
     }
 }

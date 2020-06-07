@@ -7,6 +7,9 @@
 
 package au.com.shawware.kenken.service;
 
+import au.com.shawware.kenken.model.Grid;
+import au.com.shawware.kenken.model.GridSpecification;
+
 /**
  * KenKen Solver API.
  *
@@ -14,9 +17,5 @@ package au.com.shawware.kenken.service;
  */
 public interface IKenKenSolver
 {
-    void solve();
-    
-    boolean gridIsSolved();
-    
-    int[][] solution();
+    Grid solve(GridSpecification specification);
 }

@@ -22,13 +22,16 @@ import static au.com.shawware.kenken.model.Cage.PLUS;
  */
 class PairsRule extends AbstractPlusRule
 {
-    PairsRule(List<Cage> cages)
+    PairsRule()
     {
-        super("Pairs", buildCages(cages), false); //$NON-NLS-1$
+        super("Pairs", false, true); //$NON-NLS-1$
     }
 
-    private static List<Cage> buildCages(List<Cage> cages)
+    @Override
+    @SuppressWarnings("hiding")
+    protected List<Cage> generateCages(int gridSize, List<Cage> cages, GridState gridState)
     {
+        // TODO: skip solved cages
         List<Cage> pairs = new ArrayList<>();
 
         for (int i = 0; i < cages.size(); i++)

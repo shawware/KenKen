@@ -10,6 +10,7 @@ package au.com.shawware.kenken.service;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import au.com.shawware.kenken.model.Grid;
@@ -28,7 +29,19 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("nls")
 public class RuleBasedSolverTest extends AbstractBaseTest
 {
+    private static IKenKenSolver solver;
+
     private GridSpecificationVerifier verifier;
+
+    @BeforeClass
+    public static void initialise()
+    {
+        /*
+         * RuleBasedSolver is supposed to re-usable,
+         * so we set it up once for all tests.
+         */
+        solver = new RuleBasedSolver();
+    }
 
     @Before
     public void setUp()
@@ -96,19 +109,11 @@ public class RuleBasedSolverTest extends AbstractBaseTest
         testProblem("kk-7x7-p1.json", "7432561,2761345,4317652,5243716,3654127,1576234,6125473");
     }
 
-    @SuppressWarnings("boxing")
     private void testProblem(String filename, String expectedSolution) throws IOException
     {
         GridSpecification specification = loadAndVerifyGridSpecification(filename);
         
-        IKenKenSolver solver = new RuleBasedSolver(specification);
-
-        solver.solve();
-
-        boolean solvable = !expectedSolution.contains("-");
-        assertEquals(solvable, solver.gridIsSolved());
-
-        Grid grid = new Grid(solver.solution());
+        Grid grid = solver.solve(specification);
 
         IGridVisitor visitor = new StringGridVisitor(',');
         grid.accept(visitor);

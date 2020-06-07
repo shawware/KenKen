@@ -7,11 +7,8 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import au.com.shawware.kenken.model.Cage;
 
 import static au.com.shawware.kenken.model.Cage.TIMES;
 
@@ -25,8 +22,8 @@ class TimesRule extends AbstractPermutationRule
     @SuppressWarnings("boxing")
     private static final Function<Integer, BiFunction<Integer, Integer, Integer>> MULTIPLICATION = value -> (i1, i2) -> i1 * i2;
 
-    TimesRule(List<Cage> cages)
+    TimesRule()
     {
-        super("Times", cages, false, TIMES, MULTIPLICATION); //$NON-NLS-1$
+        super("Times", TIMES, true, true, MULTIPLICATION); //$NON-NLS-1$
     }
 }

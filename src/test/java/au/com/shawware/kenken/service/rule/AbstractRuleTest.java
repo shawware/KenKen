@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import au.com.shawware.kenken.model.Cage;
@@ -31,70 +32,104 @@ import static org.junit.Assert.assertEquals;
 public class AbstractRuleTest extends AbstractBaseTest
 {
     private static final String RULE_NAME = "Test";
+    private static final int GRID_SIZE = 3;
 
+    private GridState gridState;
+
+    private Cage c1;
+    private Cage c2;
+    private Cage c3;
+    private Cage c4;
+
+    private List<Cage> cages;
+
+    @Before
+    public void setUp()
+    {
+        c1 = buildCage(PLUS,   5, new int[][] {{ 1, 0 }, {1, 1}, {1, 2}});
+        c2 = buildCage(EQUALS, 1, new int[][] {{ 0, 0 }});
+        c3 = buildCage(PLUS,   3, new int[][] {{ 1, 0 }, {1, 1}});
+        c4 = buildCage(TIMES,  3, new int[][] {{ 0, 1 }, {0, 2}});
+
+        cages = Arrays.asList(c1, c2, c3, c4);
+        
+        gridState = new GridState(GRID_SIZE, cages);
+    }
+    
     @Test
     public void testName()
     {
-        TestRule rule = new TestRule(RULE_NAME, Collections.emptyList(), true, EQUALS);
-        
+        TestRule rule = new TestRule(RULE_NAME, EQUALS, false, false);
+
+        rule.initialise(GRID_SIZE, Collections.emptyList(), gridState);
+
         assertEquals(RULE_NAME, rule.name());
     }
 
     @Test
-    public void testConstructionWithReadyCages()
+    public void testInitialisationWithUnchangedCages()
     {
-        List<Cage> cages = Arrays.asList(
-                buildCage(EQUALS, 1, new int[][] {{ 0, 0 }}),
-                buildCage(PLUS,   2, new int[][] {{ 1, 0 }, {1, 1}}),
-                buildCage(TIMES,  3, new int[][] {{ 0, 1 }, {0, 2}})
-        );
+        TestRule rule = new TestRule(RULE_NAME, EQUALS, false, false);
 
-        TestRule rule = new TestRule(RULE_NAME, cages, true, EQUALS);
+        rule.initialise(GRID_SIZE, cages, gridState);
 
         assertThat(rule.getCages(), equalTo(cages));
     }
 
     @Test
-    public void testConstructionWithRawCages()
+    public void testInitialisationWithFilteredAndUnsortedCages()
     {
-        Cage p1 = buildCage(PLUS, 2, new int[][] {{ 1, 0 }, {1, 1}, {1, 2}});
-        Cage p2 = buildCage(PLUS, 2, new int[][] {{ 1, 0 }, {1, 1}});
+        TestRule rule = new TestRule(RULE_NAME, PLUS, true, false);
 
-        List<Cage> cages = Arrays.asList(
-                buildCage(EQUALS, 1, new int[][] {{ 0, 0 }}),
-                p1,
-                buildCage(TIMES,  3, new int[][] {{ 0, 1 }, {0, 2}}),
-                p2
-        );
+        rule.initialise(GRID_SIZE, cages, gridState);
 
-        TestRule rule = new TestRule(RULE_NAME, cages, false, PLUS);
+        assertThat(rule.getCages(), equalTo(Arrays.asList(c1, c3)));
+    }
 
-        assertThat(rule.getCages(), equalTo(Arrays.asList(p2, p1)));
+    @Test
+    public void testInitialisationWithUnfilteredAndSortedRawCages()
+    {
+        TestRule rule = new TestRule(RULE_NAME, PLUS, false, true);
+
+        rule.initialise(GRID_SIZE, cages, gridState);
+
+        assertThat(rule.getCages(), equalTo(Arrays.asList(c2, c3, c4, c1)));
+    }
+    
+    @Test
+    public void testInitialisationWithFilteredAndSortedRawCages()
+    {
+        TestRule rule = new TestRule(RULE_NAME, PLUS, true, true);
+
+        rule.initialise(GRID_SIZE, cages, gridState);
+
+        assertThat(rule.getCages(), equalTo(Arrays.asList(c3, c1)));
     }
 
     @Test
     public void testExhaustionWithNoCages()
     {
-        TestRule rule = new TestRule(RULE_NAME, Collections.emptyList(), true, EQUALS);
+        TestRule rule = new TestRule(RULE_NAME, EQUALS, true, false);
 
-        GridState gridState = new GridState(1, Collections.emptyList());
-        
-        rule.applyTo(gridState);
+        rule.applyTo(new GridState(GRID_SIZE, Collections.emptyList()));
         
         assertEquals(0, rule.getExecutionCount());
     }
 
+    @SuppressWarnings("hiding")
     @Test
     public void testExhaustionWithCages()
     {
-        Cage cage = buildCage(EQUALS, 1, new int[][] {{ 0, 0 }});
-        List<Cage> cages = Collections.singletonList(cage);
-        
-        TestRule rule = new TestRule(RULE_NAME, cages, true, EQUALS);
+        TestRule rule = new TestRule(RULE_NAME, EQUALS, true, false);
 
-        GridState gridState = new GridState(1, cages);
-        
+        // We need a solvable cage for this test.
+        List<Cage> cages = Arrays.asList(c2);
+        GridState gridState = new GridState(1, Arrays.asList(c2));
+
+        rule.initialise(gridState.getGridSize(), cages, gridState);
+
         rule.applyTo(gridState);
+
         assertEquals(1, rule.getExecutionCount());
 
         gridState.processNakedSingles();

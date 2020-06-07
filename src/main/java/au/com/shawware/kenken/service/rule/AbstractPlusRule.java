@@ -7,11 +7,8 @@
 
 package au.com.shawware.kenken.service.rule;
 
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import au.com.shawware.kenken.model.Cage;
 
 import static au.com.shawware.kenken.model.Cage.PLUS;
 
@@ -25,8 +22,8 @@ abstract class AbstractPlusRule extends AbstractPermutationRule
     @SuppressWarnings("boxing")
     private static final Function<Integer, BiFunction<Integer, Integer, Integer>> ADDITION = value -> (i1, i2) -> i1 + i2;
 
-    AbstractPlusRule(String name, List<Cage> cages, boolean cagesReady)
+    AbstractPlusRule(String name, boolean filterCages, boolean sortCages)
     {
-        super(name, cages, cagesReady, PLUS, ADDITION);
+        super(name, PLUS, filterCages, sortCages, ADDITION);
     }
 }

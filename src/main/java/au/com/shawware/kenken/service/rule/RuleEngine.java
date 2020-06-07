@@ -9,6 +9,9 @@ package au.com.shawware.kenken.service.rule;
 
 import java.util.List;
 
+import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.model.Grid;
+
 /**
  * A simple engine for processing {@link ISolvingRule}s until completion.
  *
@@ -25,8 +28,13 @@ public class RuleEngine
         this.extraSolvingRules = extraSolvingRules;
     }
 
-    public void solve(GridState gridState)
+    public Grid solve(int gridSize, List<Cage> cages, GridState gridState)
     {
+        for (ISolvingRule rule : baseSolvingRules)
+        {
+            rule.initialise(gridSize, cages, gridState);
+        }
+
         int maxAttempts = extraSolvingRules.size() + 1;
         while (maxAttempts > 0)
         {
@@ -41,9 +49,12 @@ public class RuleEngine
             maxAttempts--;
             if (!extraSolvingRules.isEmpty())
             {
-                baseSolvingRules.add(extraSolvingRules.remove(0));
+                ISolvingRule rule = extraSolvingRules.remove(0);
+                rule.initialise(gridSize, cages, gridState);
+                baseSolvingRules.add(rule);
             }
         }
+        return new Grid(gridState.solution());
     }
 
     private boolean applyRules(GridState gridState)

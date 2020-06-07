@@ -20,9 +20,9 @@ import au.com.shawware.kenken.model.Square;
  */
 abstract class AbstractUnusedRule extends AbstractRule
 {
-    AbstractUnusedRule(String name, List<Cage> cages, boolean cagesReady, String operation)
+    AbstractUnusedRule(String name, String operation, boolean filterCages, boolean sortCages)
     {
-        super(name, cages, cagesReady, operation);
+        super(name, operation, filterCages, sortCages);
     }
 
     @Override

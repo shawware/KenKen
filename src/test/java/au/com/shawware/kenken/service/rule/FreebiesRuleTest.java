@@ -47,7 +47,9 @@ public class FreebiesRuleTest extends AbstractBaseTest
 
         final GridState gridState = new GridState(GRID_SIZE, cages);
 
-        final ISolvingRule rule = new FreebiesRule(cages);
+        final ISolvingRule rule = new FreebiesRule();
+
+        rule.initialise(GRID_SIZE, cages, gridState);
 
         rule.applyTo(gridState);
         assertFalse(gridState.isChanged());
@@ -67,7 +69,9 @@ public class FreebiesRuleTest extends AbstractBaseTest
 
         final GridState gridState = new GridState(GRID_SIZE, cages);
 
-        final ISolvingRule rule = new FreebiesRule(cages);
+        final ISolvingRule rule = new FreebiesRule();
+        
+        rule.initialise(GRID_SIZE, cages, gridState);
 
         rule.applyTo(gridState);
         assertTrue(gridState.isChanged());
