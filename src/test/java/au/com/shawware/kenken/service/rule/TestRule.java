@@ -10,6 +10,7 @@ package au.com.shawware.kenken.service.rule;
 import java.util.List;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.util.StringUtil;
 
 /**
  * An implementation of the {@link ISolvingRule} API for verifying rule algorithms.
@@ -40,5 +41,12 @@ public class TestRule extends AbstractRule
     List<Cage> getCages()
     {
         return cages;
+    }
+
+    @Override
+    @SuppressWarnings("boxing")
+    public String toString()
+    {
+        return StringUtil.toString(name(), executionCount, cages);
     }
 }

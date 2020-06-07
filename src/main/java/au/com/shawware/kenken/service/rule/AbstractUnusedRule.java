@@ -30,7 +30,7 @@ abstract class AbstractUnusedRule extends AbstractRule
     {
         for (Cage cage : cages)
         {
-            if (!isSolved(cage, gridState))
+            if (!gridState.isSolved(cage))
             {
                 solveCage(cage, gridState);
             }

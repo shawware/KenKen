@@ -19,7 +19,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import au.com.shawware.kenken.model.Cage;
-import au.com.shawware.kenken.model.Square;
 
 import static au.com.shawware.kenken.model.Cage.EQUALS;
 import static au.com.shawware.kenken.model.Cage.PLUS;
@@ -96,7 +95,7 @@ public class RuleEngineTest extends AbstractBaseTest
     {
         when(gridState.isChanged()).thenReturn(true, true, false);
         when(gridState.isSolved()).thenReturn(true);
-        when(gridState.isSolved(any())).thenReturn(false, true, false, true);
+        when(gridState.isSolved(any(Cage.class))).thenReturn(false, false, true, true);
 
         ruleEngine.solve(gridSize, cages, gridState);
 
@@ -111,18 +110,15 @@ public class RuleEngineTest extends AbstractBaseTest
     @SuppressWarnings("boxing")
     public void testEngineWhenExtraRulesSolve()
     {
-        when(gridState.isChanged()).thenReturn(true, true, false, false, true, false, false);
+        when(gridState.isChanged()).thenReturn(true, true, false, false, false, false, true, false);
         when(gridState.isSolved()).thenReturn(false, true);
-        when(gridState.isSolved(new Square(0,0))).thenReturn(false, true);
-        when(gridState.isSolved(new Square(1,0))).thenReturn(false, true);
-        when(gridState.isSolved(new Square(0,1))).thenReturn(false, true);
-        when(gridState.isSolved(new Square(0,2))).thenReturn(false, true);
+        when(gridState.isSolved(any(Cage.class))).thenReturn(false, false, true, true, false, true);
 
         ruleEngine.solve(gridSize, cages, gridState);
 
         assertEquals(1, rule1.getExecutionCount());
-        assertEquals(4, rule2.getExecutionCount());
-        assertEquals(2, rule3.getExecutionCount());
+        assertEquals(1, rule2.getExecutionCount());
+        assertEquals(1, rule3.getExecutionCount());
         assertEquals(3, baseRules.size());
         assertEquals(0, extraRules.size());
     }

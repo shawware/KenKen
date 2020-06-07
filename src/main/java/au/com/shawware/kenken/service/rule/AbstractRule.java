@@ -75,7 +75,7 @@ abstract class AbstractRule implements ISolvingRule
             return;
         }
 
-        exhausted = cages.stream().allMatch(cage -> isSolved(cage, gridState));
+        exhausted = cages.stream().allMatch(cage -> gridState.isSolved(cage));
 
         if (!exhausted)
         {
@@ -84,12 +84,6 @@ abstract class AbstractRule implements ISolvingRule
     }
 
     protected abstract void applyRuleTo(GridState gridState);
-
-    @SuppressWarnings("static-method")
-    protected final boolean isSolved(Cage cage, GridState gridState)
-    {
-        return cage.getSquares().stream().allMatch(square -> gridState.isSolved(square));
-    }
 
     @Override
     public final String name()
