@@ -95,6 +95,11 @@ class GridState
         changed = true;
     }
 
+    boolean isSolved(Cage cage)
+    {
+        return cage.getSquares().stream().allMatch(square -> isSolved(square));
+    }
+
     boolean isSolved(Square square)
     {
         return isSolved(square.getX(), square.getY());

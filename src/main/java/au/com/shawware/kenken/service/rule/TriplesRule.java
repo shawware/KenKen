@@ -31,27 +31,26 @@ class TriplesRule extends AbstractPlusRule
     @SuppressWarnings("hiding")
     protected List<Cage> generateCages(int gridSize, List<Cage> cages, GridState gridState)
     {
-        // TODO: skip solved cages
         List<Cage> triples = new ArrayList<>();
 
         for (int i = 0; i < cages.size(); i++)
         {
             Cage c1 = cages.get(i);
-            if (!c1.getOperation().equals(PLUS))
+            if (!c1.getOperation().equals(PLUS) || gridState.isSolved(c1))
             {
                 continue;
             }
             for (int j = i + 1; j < cages.size(); j++)
             {
                 Cage c2 = cages.get(j);
-                if (!c2.getOperation().equals(PLUS))
+                if (!c2.getOperation().equals(PLUS) || gridState.isSolved(c2))
                 {
                     continue;
                 }
                 for (int k = j + 1; k < cages.size(); k++)
                 {
                     Cage c3 = cages.get(k);
-                    if (!c3.getOperation().equals(PLUS))
+                    if (!c3.getOperation().equals(PLUS) || gridState.isSolved(c3))
                     {
                         continue;
                     }

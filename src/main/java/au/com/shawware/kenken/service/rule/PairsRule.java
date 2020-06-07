@@ -31,20 +31,19 @@ class PairsRule extends AbstractPlusRule
     @SuppressWarnings("hiding")
     protected List<Cage> generateCages(int gridSize, List<Cage> cages, GridState gridState)
     {
-        // TODO: skip solved cages
         List<Cage> pairs = new ArrayList<>();
 
         for (int i = 0; i < cages.size(); i++)
         {
             Cage c1 = cages.get(i);
-            if (!c1.getOperation().equals(PLUS))
+            if (!c1.getOperation().equals(PLUS) || gridState.isSolved(c1))
             {
                 continue;
             }
             for (int j = i + 1; j < cages.size(); j++)
             {
                 Cage c2 = cages.get(j);
-                if (!c2.getOperation().equals(PLUS))
+                if (!c2.getOperation().equals(PLUS) || gridState.isSolved(c2))
                 {
                     continue;
                 }
