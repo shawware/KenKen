@@ -22,7 +22,7 @@ import au.com.shawware.kenken.model.GridSpecification;
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
-public abstract class AbstractBaseTest
+abstract class AbstractBaseTest
 {
     private GridSpecificationLoader loader;
     private ClassLoader classLoader;

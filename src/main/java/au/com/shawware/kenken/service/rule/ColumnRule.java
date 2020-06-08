@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.model.Column;
 import au.com.shawware.kenken.model.Square;
-
-import static au.com.shawware.kenken.model.Cage.PLUS;
 
 /**
  * A rule that solves a grid's columns.
@@ -38,7 +37,7 @@ class ColumnRule extends AbstractLineRule
             {
                 squares.add(grid[x][y]);
             }
-            columns.add(new Cage(PLUS, sum, squares));
+            columns.add(new Column(x, sum, squares));
         }
         return columns;
     }

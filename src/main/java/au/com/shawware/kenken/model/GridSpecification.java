@@ -40,6 +40,11 @@ public class GridSpecification
     {
         this.size = size;
         this.cages = (cages == null) ? Collections.emptyList() : Collections.unmodifiableList(cages);
+        
+        for (int i = 0; i < this.cages.size(); i++)
+        {
+            this.cages.get(i).setId(i);
+        }
     }
 
     public final int getSize()

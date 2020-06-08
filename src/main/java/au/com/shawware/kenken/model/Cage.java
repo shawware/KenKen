@@ -30,10 +30,18 @@ public class Cage
 
     public static final String VALID_OPERATIONS = "=+-x/"; //$NON-NLS-1$
 
+    protected static final String TYPE_PLAIN  = "Plain";  //$NON-NLS-1$
+    protected static final String TYPE_ROW    = "Row";    //$NON-NLS-1$
+    protected static final String TYPE_COLUMN = "Column"; //$NON-NLS-1$
+    protected static final String TYPE_COMBO  = "Combo";  //$NON-NLS-1$
+    
     private final String operation;
     private final int value;
     private final List<Square> squares;
     private final int size;
+    
+    private int id;
+    private String type;
 
     @JsonCreator
     public Cage(
@@ -42,10 +50,27 @@ public class Cage
             @JsonProperty("squares") List<Square> squares
         )
     {
+        this(0, TYPE_PLAIN, operation, value, squares);
+    }
+
+    public Cage(int id, String type, String operation, int value, List<Square> squares)
+    {
+        this.id = id;
+        this.type = type;
         this.operation = operation;
         this.value = value;
         this.squares = (squares == null) ? Collections.emptyList() : Collections.unmodifiableList(squares);
         this.size = this.squares.size();
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     public final String getOperation()
@@ -72,6 +97,6 @@ public class Cage
     @SuppressWarnings("boxing")
     public String toString()
     {
-        return StringUtil.toString(operation, value, size, squares);
+        return StringUtil.toString(id, type, operation, value, size, squares);
     }
 }
