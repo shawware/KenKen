@@ -5,7 +5,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-package au.com.shawware.kenken.service.rule;
+package au.com.shawware.kenken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import au.com.shawware.kenken.model.Square;
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
-abstract class AbstractBaseTest
+public abstract class AbstractBaseTest
 {
     protected final Cage buildCage(String operation, int value, int[][] coords)
     {

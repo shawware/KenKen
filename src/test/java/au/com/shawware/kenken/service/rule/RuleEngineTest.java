@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import au.com.shawware.kenken.AbstractBaseTest;
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.util.StringUtil;
 
@@ -46,8 +47,8 @@ public class RuleEngineTest extends AbstractBaseTest
     public static void staticSetUp()
     {
         freebiesRule = new FreebiesRule();
-        plusRule = new PlusRule();
-        timesRule = new TimesRule(); 
+        plusRule     = new PlusRule();
+        timesRule    = new TimesRule();
     }
 
     @Before

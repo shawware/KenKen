@@ -53,7 +53,7 @@ public class Cage
         this(0, TYPE_PLAIN, operation, value, squares);
     }
 
-    public Cage(int id, String type, String operation, int value, List<Square> squares)
+    Cage(int id, String type, String operation, int value, List<Square> squares)
     {
         this.id = id;
         this.type = type;

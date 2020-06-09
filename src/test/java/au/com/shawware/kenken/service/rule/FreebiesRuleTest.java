@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import au.com.shawware.kenken.AbstractBaseTest;
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Square;
 
