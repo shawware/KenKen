@@ -129,28 +129,27 @@ public class RuleEngineTest extends AbstractBaseTest
         final int gridSize = 3;
 
         final List<Cage> cages = Arrays.asList(
-              buildCage(EQUALS, 3, new int[][] {{ 0, 2 }}),
-              buildCage(PLUS,   4, new int[][] {{ 0, 1 }, { 1, 0 }, { 0, 0 }}),
-              buildCage(PLUS,   6, new int[][] {{ 1, 1 }, { 1, 2 }, { 2, 2 }}),
-              buildCage(TIMES,  6, new int[][] {{ 2, 0 }, { 2, 1 }})
+              buildCage(PLUS,    3, new int[][] {{ 1, 0 }, { 0, 0 }}),
+              buildCage(PLUS,    7, new int[][] {{ 2, 0 }, { 2, 1 }, { 2, 2 }, { 1, 2 }}),
+              buildCage(TIMES,  18, new int[][] {{ 0, 1 }, { 0, 2 }, { 1, 1 }})
         );
 
         final GridState gridState = new GridState(gridSize, cages);
 
         final RuleEngine ruleEngine = prepareRuleEngine(
-                asList(freebiesRule, plusRule),
+                asList(freebiesRule),
                 asList(timesRule)
         );
 
         ruleEngine.solve(gridSize, cages, gridState);
 
         assertEquals(3, counts.noChanges("Freebies"));
-        assertEquals(3, counts.noChanges("Plus"));
+        assertEquals(0, counts.noChanges("Plus"));
         assertEquals(1, counts.noChanges("Times"));
-        assertEquals(2, counts.noChanges(RuleEngine.NAKED_SINGLES));
+        assertEquals(0, counts.noChanges(RuleEngine.NAKED_SINGLES));
 
-        assertEquals(1, counts.changes("Freebies"));
-        assertEquals(1, counts.changes("Plus"));
+        assertEquals(0, counts.changes("Freebies"));
+        assertEquals(0, counts.changes("Plus"));
         assertEquals(1, counts.changes("Times"));
         assertEquals(1, counts.changes(RuleEngine.NAKED_SINGLES));
     }
