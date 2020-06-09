@@ -9,6 +9,7 @@ package au.com.shawware.kenken.service.rule;
 
 import java.util.stream.IntStream;
 
+import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Square;
 
 import static au.com.shawware.kenken.model.Cage.EQUALS;
@@ -27,13 +28,11 @@ class FreebiesRule extends AbstractRule
     }
 
     @Override
-    protected void applyRuleTo(GridState gridState)
+    protected void applyRuleTo(Cage cage, GridState gridState)
     {
-        cages.forEach(cage -> {
-            Square square = cage.getSquares().get(0); // There's only ever one square.
-            IntStream.rangeClosed(1, gridState.getGridSize())
-                .filter(value -> value != cage.getValue())
-                .forEach(value -> gridState.removeValue(square, value));
-        });
+        Square square = cage.getSquares().get(0); // There's only ever one square.
+        IntStream.rangeClosed(1, gridState.getGridSize())
+            .filter(value -> value != cage.getValue())
+            .forEach(value -> gridState.removeValue(square, value));
     }
 }

@@ -28,7 +28,7 @@ public class TestRule extends AbstractRule
     }
 
     @Override
-    protected void applyRuleTo(GridState gridState)
+    protected void applyRuleTo(Cage cage, GridState gridState)
     {
         executionCount++;
     }

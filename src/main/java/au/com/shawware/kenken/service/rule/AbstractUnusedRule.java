@@ -26,18 +26,7 @@ abstract class AbstractUnusedRule extends AbstractRule
     }
 
     @Override
-    protected void applyRuleTo(GridState gridState)
-    {
-        for (Cage cage : cages)
-        {
-            if (!gridState.isSolved(cage))
-            {
-                solveCage(cage, gridState);
-            }
-        }
-    }
-
-    private void solveCage(Cage cage, GridState gridState)
+    protected void applyRuleTo(Cage cage, GridState gridState)
     {
         List<Square> squares = cage.getSquares();
         List<Set<Integer>> unusedValues = findUnusedValues(cage, gridState);

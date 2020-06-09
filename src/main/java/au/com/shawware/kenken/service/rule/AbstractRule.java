@@ -79,11 +79,13 @@ abstract class AbstractRule implements ISolvingRule
 
         if (!exhausted)
         {
-            applyRuleTo(gridState);
+            cages.stream()
+                .filter(cage -> !gridState.isSolved(cage))
+                .forEach(cage -> applyRuleTo(cage, gridState));
         }
     }
 
-    protected abstract void applyRuleTo(GridState gridState);
+    protected abstract void applyRuleTo(Cage cage, GridState gridState);
 
     @Override
     public final String name()
