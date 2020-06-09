@@ -9,23 +9,23 @@ package au.com.shawware.kenken.service.rule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.util.StringUtil;
 
 import static au.com.shawware.kenken.model.Cage.EQUALS;
 import static au.com.shawware.kenken.model.Cage.PLUS;
 import static au.com.shawware.kenken.model.Cage.TIMES;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 /**
  * Verifies the {@link RuleEngine}.
@@ -35,91 +35,186 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("nls")
 public class RuleEngineTest extends AbstractBaseTest
 {
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule(); 
+    // Re-use the same rules across all tests;
+    private static ISolvingRule timesRule;
+    private static ISolvingRule freebiesRule;
+    private static ISolvingRule plusRule;
 
-    @Mock
-    private GridState gridState;
+    private TallyRuleCounts counts;
 
-    private int gridSize;
-    private List<Cage> cages;
-
-    private TestRule rule1;
-    private TestRule rule2;
-    private TestRule rule3;
-
-    private List<ISolvingRule> baseRules;
-    private List<ISolvingRule> extraRules;
-
-    private RuleEngine ruleEngine;
+    @BeforeClass
+    public static void staticSetUp()
+    {
+        freebiesRule = new FreebiesRule();
+        plusRule = new PlusRule();
+        timesRule = new TimesRule(); 
+    }
 
     @Before
     public void setUp()
     {
-        gridSize = 3;
-        cages = Arrays.asList(
-                buildCage(EQUALS, 1, new int[][] {{ 0, 0 }}),
-                buildCage(PLUS,   2, new int[][] {{ 1, 0 }, {1, 1}}),
-                buildCage(TIMES,  3, new int[][] {{ 0, 1 }, {0, 2}})
-        );
+        counts = new TallyRuleCounts();
+    }
 
-        rule1 = new TestRule("Test1", EQUALS, true, false);
-        rule2 = new TestRule("Test2", PLUS,   true, false);
-        rule3 = new TestRule("Test3", TIMES,  true, false);
-
-        baseRules = new ArrayList<>();
-        baseRules.add(rule1);
-        baseRules.add(rule2);
-
-        extraRules = new ArrayList<>();
-        extraRules.add(rule3);
-
-        ruleEngine = new RuleEngine(baseRules, extraRules);
+    private RuleEngine prepareRuleEngine(List<ISolvingRule> baseSolvingRules, List<ISolvingRule> extraSolvingRules)
+    {
+        RuleEngine ruleEngine = new RuleEngine(baseSolvingRules, extraSolvingRules);
+        ruleEngine.attach(counts);
+        return ruleEngine;
     }
 
     @Test
     public void testEngineWhenUnsolvable()
     {
+        final int gridSize = 2;
+
+        final List<Cage> cages = Arrays.asList(
+              buildCage(PLUS, 3, new int[][] {{ 0, 0 }, { 0, 1 }}),
+              buildCage(PLUS, 3, new int[][] {{ 1, 0 }, { 1, 1 }})
+        );
+
+        final GridState gridState = new GridState(gridSize, cages);
+
+        final RuleEngine ruleEngine = prepareRuleEngine(
+                asList(freebiesRule, plusRule),
+                asList(timesRule)
+        );
+
         ruleEngine.solve(gridSize, cages, gridState);
 
-        assertEquals(2, rule1.getExecutionCount());
-        assertEquals(2, rule2.getExecutionCount());
-        assertEquals(1, rule3.getExecutionCount());
-        assertEquals(3, baseRules.size());
-        assertEquals(0, extraRules.size());
+        assertEquals(2, counts.noChanges("Freebies"));
+        assertEquals(2, counts.noChanges("Plus"));
+        assertEquals(1, counts.noChanges("Times"));
+        assertEquals(0, counts.noChanges(RuleEngine.NAKED_SINGLES));
+
+        assertEquals(0, counts.changes("Freebies"));
+        assertEquals(0, counts.changes("Plus"));
+        assertEquals(0, counts.changes("Times"));
+        assertEquals(0, counts.changes(RuleEngine.NAKED_SINGLES));
     }
 
     @Test
-    @SuppressWarnings("boxing")
     public void testEngineWhenBaseRulesSolve()
     {
-        when(gridState.isChanged()).thenReturn(true, true, false);
-        when(gridState.isSolved()).thenReturn(true);
-        when(gridState.isSolved(any(Cage.class))).thenReturn(false, false, true, true);
+        final int gridSize = 2;
+
+        final List<Cage> cages = Arrays.asList(
+              buildCage(EQUALS, 1, new int[][] {{ 0, 0 }}),
+              buildCage(TIMES,  4, new int[][] {{ 0, 1 }, { 1, 0 }, { 1, 1 }})
+        );
+
+        final GridState gridState = new GridState(gridSize, cages);
+
+        final RuleEngine ruleEngine = prepareRuleEngine(
+                asList(freebiesRule, plusRule, timesRule),
+                Collections.emptyList()
+        );
 
         ruleEngine.solve(gridSize, cages, gridState);
 
-        assertEquals(1, rule1.getExecutionCount());
-        assertEquals(1, rule2.getExecutionCount());
-        assertEquals(0, rule3.getExecutionCount());
-        assertEquals(2, baseRules.size());
-        assertEquals(1, extraRules.size());
+        assertEquals(1, counts.noChanges("Freebies"));
+        assertEquals(2, counts.noChanges("Plus"));
+        assertEquals(2, counts.noChanges("Times"));
+        assertEquals(0, counts.noChanges(RuleEngine.NAKED_SINGLES));
+
+        assertEquals(1, counts.changes("Freebies"));
+        assertEquals(0, counts.changes("Plus"));
+        assertEquals(0, counts.changes("Times"));
+        assertEquals(1, counts.changes(RuleEngine.NAKED_SINGLES));
     }
 
     @Test
-    @SuppressWarnings("boxing")
     public void testEngineWhenExtraRulesSolve()
     {
-        when(gridState.isChanged()).thenReturn(true, true, false, false, false, false, true, false);
-        when(gridState.isSolved()).thenReturn(false, true);
-        when(gridState.isSolved(any(Cage.class))).thenReturn(false, false, true, true, false, true);
+        final int gridSize = 3;
+
+        final List<Cage> cages = Arrays.asList(
+              buildCage(EQUALS, 3, new int[][] {{ 0, 2 }}),
+              buildCage(PLUS,   4, new int[][] {{ 0, 1 }, { 1, 0 }, { 0, 0 }}),
+              buildCage(PLUS,   6, new int[][] {{ 1, 1 }, { 1, 2 }, { 2, 2 }}),
+              buildCage(TIMES,  6, new int[][] {{ 2, 0 }, { 2, 1 }})
+        );
+
+        final GridState gridState = new GridState(gridSize, cages);
+
+        final RuleEngine ruleEngine = prepareRuleEngine(
+                asList(freebiesRule, plusRule),
+                asList(timesRule)
+        );
 
         ruleEngine.solve(gridSize, cages, gridState);
 
-        assertEquals(1, rule1.getExecutionCount());
-        assertEquals(1, rule2.getExecutionCount());
-        assertEquals(1, rule3.getExecutionCount());
-        assertEquals(3, baseRules.size());
-        assertEquals(0, extraRules.size());
+        assertEquals(3, counts.noChanges("Freebies"));
+        assertEquals(3, counts.noChanges("Plus"));
+        assertEquals(1, counts.noChanges("Times"));
+        assertEquals(2, counts.noChanges(RuleEngine.NAKED_SINGLES));
+
+        assertEquals(1, counts.changes("Freebies"));
+        assertEquals(1, counts.changes("Plus"));
+        assertEquals(1, counts.changes("Times"));
+        assertEquals(1, counts.changes(RuleEngine.NAKED_SINGLES));
+    }
+    
+    @SuppressWarnings("static-method")
+    private List<ISolvingRule> asList(ISolvingRule... rules)
+    {
+        List<ISolvingRule> list = new ArrayList<>();
+        for (ISolvingRule rule : rules)
+        {
+            list.add(rule);
+        }
+        return list;
+    }
+}
+
+class TallyRuleCounts implements Observer
+{
+    private final Map<String, Data> counts;
+
+    public TallyRuleCounts()
+    {
+        counts = new HashMap<>();
+    }
+
+    @Override
+    public void rule(String name, boolean changedState)
+    {
+        Data count = counts.computeIfAbsent(name, key -> new Data());
+        if (changedState)
+        {
+            count.change.incrementAndGet();
+        }
+        else
+        {
+            count.noChange.incrementAndGet();
+        }
+    }
+    
+    int changes(String name)
+    {
+        return counts.getOrDefault(name, new Data()).change.intValue();
+    }
+
+    int noChanges(String name)
+    {
+        return counts.getOrDefault(name, new Data()).noChange.intValue();
+    }
+
+    @Override
+    public String toString()
+    {
+        return StringUtil.toString(counts);
+    }
+    
+    class Data
+    {
+        AtomicInteger change;
+        AtomicInteger noChange;
+
+        Data()
+        {
+            change = new AtomicInteger(0);
+            noChange = new AtomicInteger(0);
+        }
     }
 }

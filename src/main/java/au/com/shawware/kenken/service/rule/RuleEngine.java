@@ -7,7 +7,9 @@
 
 package au.com.shawware.kenken.service.rule;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Grid;
@@ -19,13 +21,27 @@ import au.com.shawware.kenken.model.Grid;
  */
 public class RuleEngine
 {
+    static final String NAKED_SINGLES = "Naked Singles"; //$NON-NLS-1$
+
     private final List<ISolvingRule> baseSolvingRules;
     private final List<ISolvingRule> extraSolvingRules;
+    private final Set<Observer> observers;
 
     public RuleEngine(List<ISolvingRule> baseSolvingRules, List<ISolvingRule> extraSolvingRules)
     {
         this.baseSolvingRules = baseSolvingRules;
         this.extraSolvingRules = extraSolvingRules;
+        this.observers = new HashSet<>();
+    }
+
+    public void attach(Observer observer)
+    {
+        observers.add(observer);
+    }
+
+    private void notify(String ruleName, boolean change)
+    {
+        observers.forEach(observer -> observer.rule(ruleName, change));
     }
 
     public Grid solve(int gridSize, List<Cage> cages, GridState gridState)
@@ -64,12 +80,20 @@ public class RuleEngine
         {
             gridState.markUnchanged();
             rule.applyTo(gridState);
+            notify(rule.name(), gridState.isChanged());
             if (gridState.isChanged())
             {
+                gridState.markUnchanged();
                 gridState.processNakedSingles();
+                notify(NAKED_SINGLES, gridState.isChanged());
                 change = true;
             }
         }
         return change;
     }
+}
+
+interface Observer
+{
+    void rule(String name, boolean changedState);
 }
