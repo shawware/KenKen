@@ -52,15 +52,6 @@ class SquareState
     }
     
     @SuppressWarnings("boxing")
-    public void solve()
-    {
-        if (possibleValues.size() == 1)
-        {
-            solution = possibleValues.iterator().next();
-        }
-    }
-
-    @SuppressWarnings("boxing")
     public boolean couldBeSolved()
     {
         boolean couldBeSolved = false;

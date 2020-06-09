@@ -89,11 +89,6 @@ class GridState
         return gridState[x][y].value();
     }
 
-    void solve(Square square)
-    {
-        gridState[square.getX()][square.getY()].solve();
-        changed = true;
-    }
 
     boolean isSolved(Cage cage)
     {

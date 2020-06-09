@@ -39,7 +39,6 @@ abstract class AbstractUnusedRule extends AbstractRule
                 if (!gridState.isSolved(square))
                 {
                     gridState.removeValues(square, unusedValues.get(i));
-                    gridState.solve(square);
                 }
             }
         }
