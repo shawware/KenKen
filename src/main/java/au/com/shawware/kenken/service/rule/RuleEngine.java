@@ -57,10 +57,10 @@ public class RuleEngine
             while (applyRules(gridState))
             {
                 // Keep going until the grid is solved or the rules stop having an effect
-            }
-            if (gridState.isSolved())
-            {
-                break;
+                if (gridState.isSolved())
+                {
+                    break;
+                }
             }
             maxAttempts--;
             if (!extraSolvingRules.isEmpty())

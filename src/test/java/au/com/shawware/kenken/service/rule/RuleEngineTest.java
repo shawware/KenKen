@@ -112,9 +112,9 @@ public class RuleEngineTest extends AbstractBaseTest
 
         ruleEngine.solve(gridSize, cages, gridState);
 
-        assertEquals(1, counts.noChanges("Freebies"));
-        assertEquals(2, counts.noChanges("Plus"));
-        assertEquals(2, counts.noChanges("Times"));
+        assertEquals(0, counts.noChanges("Freebies"));
+        assertEquals(1, counts.noChanges("Plus"));
+        assertEquals(1, counts.noChanges("Times"));
         assertEquals(0, counts.noChanges(RuleEngine.NAKED_SINGLES));
 
         assertEquals(1, counts.changes("Freebies"));
@@ -143,9 +143,9 @@ public class RuleEngineTest extends AbstractBaseTest
 
         ruleEngine.solve(gridSize, cages, gridState);
 
-        assertEquals(3, counts.noChanges("Freebies"));
+        assertEquals(2, counts.noChanges("Freebies"));
         assertEquals(0, counts.noChanges("Plus"));
-        assertEquals(1, counts.noChanges("Times"));
+        assertEquals(0, counts.noChanges("Times"));
         assertEquals(0, counts.noChanges(RuleEngine.NAKED_SINGLES));
 
         assertEquals(0, counts.changes("Freebies"));
