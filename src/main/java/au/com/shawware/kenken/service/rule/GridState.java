@@ -150,6 +150,19 @@ class GridState
         }
     }
 
+    boolean processNakedSingles(Cage cage)
+    {
+        boolean change = false;
+        for (Square square : cage.getSquares())
+        {
+            if (solveSquare(square.getX(), square.getY()))
+            {
+                change = true;
+            }
+        }
+        return change ? isSolved(cage) : false;
+    }
+
     private boolean processSingleValues()
     {
         boolean change = false;
@@ -157,15 +170,24 @@ class GridState
         {
             for (int y = 0; y < gridSize; y++)
             {
-                if (!isSolved(x, y) && gridState[x][y].couldBeSolved())
+                if (solveSquare(x, y))
                 {
                     change = true;
-                    removeFromRow(x, y);
-                    removeFromColumn(x, y);
                 }
             }
         }
         return change;
+    }
+
+    private boolean solveSquare(int x, int y)
+    {
+        if (!isSolved(x, y) && gridState[x][y].couldBeSolved())
+        {
+            removeFromRow(x, y);
+            removeFromColumn(x, y);
+            return true;
+        }
+        return false;
     }
 
     private void removeFromRow(int x, int y)

@@ -42,9 +42,9 @@ public class TestKenKenSolverObserver implements IKenKenSolverObserver
     }
 
     @Override
-    public void cage(Cage cage, boolean change)
+    public void cage(Cage cage, boolean change, boolean solved)
     {
-        stream.format("Cage: %s %d done: change: %b\n", cage.getType(), cage.getId(), change);
+        stream.format("Cage: %s %d done: change: %b, solved: %b\n", cage.getType(), cage.getId(), change, solved);
     }
 
     @Override

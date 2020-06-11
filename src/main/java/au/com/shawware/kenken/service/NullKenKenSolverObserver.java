@@ -31,7 +31,7 @@ public class NullKenKenSolverObserver implements IKenKenSolverObserver
     }
 
     @Override
-    public void cage(Cage cage, boolean change)
+    public void cage(Cage cage, boolean change, boolean solved)
     {
         // Do nothing
     }

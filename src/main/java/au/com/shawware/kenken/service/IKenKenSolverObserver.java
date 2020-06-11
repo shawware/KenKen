@@ -22,7 +22,7 @@ public interface IKenKenSolverObserver
 
     void tryingCage(Cage cage);
 
-    void cage(Cage cage, boolean change);
+    void cage(Cage cage, boolean change, boolean solved);
     
     void nakedSingles();
 

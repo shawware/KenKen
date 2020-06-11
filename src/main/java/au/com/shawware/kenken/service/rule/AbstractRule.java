@@ -87,7 +87,12 @@ abstract class AbstractRule implements ISolvingRule
                 .forEach(cage -> {
                     observer.tryingCage(cage);
                     boolean change = applyRuleTo(cage, gridState);
-                    observer.cage(cage, change);
+                    boolean solved = false;
+                    if (change)
+                    {
+                        solved = gridState.processNakedSingles(cage);
+                    }
+                    observer.cage(cage, change, solved);
                 });
         }
     }
