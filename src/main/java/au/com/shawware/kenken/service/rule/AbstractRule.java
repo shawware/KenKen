@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.service.IKenKenSolverObserver;
 import au.com.shawware.util.StringUtil;
 
 /**
@@ -28,6 +29,7 @@ abstract class AbstractRule implements ISolvingRule
     
     protected List<Cage> cages;
     private boolean exhausted;
+    private IKenKenSolverObserver observer;
 
     AbstractRule(String name, String operation, boolean filterCages, boolean sortCages)
     {
@@ -41,7 +43,7 @@ abstract class AbstractRule implements ISolvingRule
 
     @Override
     @SuppressWarnings("hiding")
-    public final void initialise(int gridSize, List<Cage> cages, GridState gridState)
+    public final void initialise(int gridSize, List<Cage> cages, GridState gridState, IKenKenSolverObserver observer)
     {
         List<Cage> generatedCages = generateCages(gridSize, cages, gridState);
         if (filterCages)
@@ -56,6 +58,7 @@ abstract class AbstractRule implements ISolvingRule
         }
         this.cages = Collections.unmodifiableList(generatedCages);
         this.exhausted = this.cages.isEmpty();
+        this.observer = observer;
     }
 
     /*
@@ -81,11 +84,15 @@ abstract class AbstractRule implements ISolvingRule
         {
             cages.stream()
                 .filter(cage -> !gridState.isSolved(cage))
-                .forEach(cage -> applyRuleTo(cage, gridState));
+                .forEach(cage -> {
+                    observer.tryingCage(cage);
+                    boolean change = applyRuleTo(cage, gridState);
+                    observer.cage(cage, change);
+                });
         }
     }
 
-    protected abstract void applyRuleTo(Cage cage, GridState gridState);
+    protected abstract boolean applyRuleTo(Cage cage, GridState gridState);
 
     @Override
     public final String name()

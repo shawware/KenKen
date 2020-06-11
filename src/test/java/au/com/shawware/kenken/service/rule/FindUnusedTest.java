@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Square;
+import au.com.shawware.kenken.service.NullKenKenSolverObserver;
 
 import static au.com.shawware.kenken.model.Cage.DIVIDE;
 import static au.com.shawware.kenken.model.Cage.MINUS;
@@ -53,7 +54,7 @@ public class FindUnusedTest
         squares = prepareSquares(gridType, numberOfSquares);
         cage = new Cage(operation, value, squares);
         List<Cage> cages = Collections.singletonList(cage);
-        gridState = new GridState(gridSize, cages);
+        gridState = new GridState(gridSize, cages, new NullKenKenSolverObserver());
 
         switch(operation)
         {

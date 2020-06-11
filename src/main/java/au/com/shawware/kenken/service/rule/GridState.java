@@ -7,6 +7,7 @@
 
 package au.com.shawware.kenken.service.rule;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import java.util.stream.IntStream;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Square;
+import au.com.shawware.kenken.service.IKenKenSolverObserver;
 import au.com.shawware.util.StringUtil;
 
 /**
@@ -25,13 +27,15 @@ class GridState
 {
     private final int gridSize;
     private final SquareState[][] gridState;
+    private final IKenKenSolverObserver observer;
     
     private boolean changed;
 
-    GridState(int gridSize, List<Cage> cages)
+    GridState(int gridSize, List<Cage> cages, IKenKenSolverObserver observer)
     {
         this.gridSize = gridSize;
         this.gridState = new SquareState[gridSize][gridSize];
+        this.observer = observer;
         
         final Set<Integer> initialValues = IntStream
                 .rangeClosed(1, gridSize)
@@ -72,23 +76,25 @@ class GridState
         removeValue(square.getX(), square.getY(), value);
     }
 
-    void removeValue(int x, int y, int value)
+    @SuppressWarnings("boxing")
+    private void removeValue(int x, int y, int value)
     {
         gridState[x][y].removeValue(value);
         changed = true;
+        observer.square(x, y, Collections.singleton(value));
     }
 
     void removeValues(Square square, Set<Integer> values)
     {
         gridState[square.getX()][square.getY()].removeValues(values);
         changed = true;
+        observer.square(square.getX(), square.getY(), values);
     }
 
     int value(int x, int y)
     {
         return gridState[x][y].value();
     }
-
 
     boolean isSolved(Cage cage)
     {

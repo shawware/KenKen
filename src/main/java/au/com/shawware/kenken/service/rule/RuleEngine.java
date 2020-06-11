@@ -13,6 +13,7 @@ import java.util.Set;
 
 import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Grid;
+import au.com.shawware.kenken.service.IKenKenSolverObserver;
 
 /**
  * A simple engine for processing {@link ISolvingRule}s until completion.
@@ -44,17 +45,17 @@ public class RuleEngine
         observers.forEach(observer -> observer.rule(ruleName, change));
     }
 
-    public Grid solve(int gridSize, List<Cage> cages, GridState gridState)
+    public Grid solve(int gridSize, List<Cage> cages, GridState gridState, IKenKenSolverObserver observer)
     {
         for (ISolvingRule rule : baseSolvingRules)
         {
-            rule.initialise(gridSize, cages, gridState);
+            rule.initialise(gridSize, cages, gridState, observer);
         }
 
         int maxAttempts = extraSolvingRules.size() + 1;
         while (maxAttempts > 0)
         {
-            while (applyRules(gridState))
+            while (applyRules(gridState, observer))
             {
                 // Keep going until the grid is solved or the rules stop having an effect
                 if (gridState.isSolved())
@@ -66,14 +67,14 @@ public class RuleEngine
             if (!extraSolvingRules.isEmpty())
             {
                 ISolvingRule rule = extraSolvingRules.remove(0);
-                rule.initialise(gridSize, cages, gridState);
+                rule.initialise(gridSize, cages, gridState, observer);
                 baseSolvingRules.add(rule);
             }
         }
         return new Grid(gridState.solution());
     }
 
-    private boolean applyRules(GridState gridState)
+    private boolean applyRules(GridState gridState, IKenKenSolverObserver observer)
     {
         boolean change = false;
         for (ISolvingRule rule : baseSolvingRules)
@@ -84,6 +85,7 @@ public class RuleEngine
             if (gridState.isChanged())
             {
                 gridState.markUnchanged();
+                observer.nakedSingles();
                 gridState.processNakedSingles();
                 notify(NAKED_SINGLES, gridState.isChanged());
                 change = true;

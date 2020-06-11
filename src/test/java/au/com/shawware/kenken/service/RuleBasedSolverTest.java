@@ -113,7 +113,7 @@ public class RuleBasedSolverTest extends AbstractBaseTest
     {
         GridSpecification specification = loadAndVerifyGridSpecification(filename);
         
-        Grid grid = solver.solve(specification);
+        Grid grid = solver.solve(specification, new TestKenKenSolverObserver(System.out));
 
         IGridVisitor visitor = new StringGridVisitor(',');
         grid.accept(visitor);

@@ -28,11 +28,12 @@ class FreebiesRule extends AbstractRule
     }
 
     @Override
-    protected void applyRuleTo(Cage cage, GridState gridState)
+    protected boolean applyRuleTo(Cage cage, GridState gridState)
     {
         Square square = cage.getSquares().get(0); // There's only ever one square.
         IntStream.rangeClosed(1, gridState.getGridSize())
             .filter(value -> value != cage.getValue())
             .forEach(value -> gridState.removeValue(square, value));
+        return true;
     }
 }

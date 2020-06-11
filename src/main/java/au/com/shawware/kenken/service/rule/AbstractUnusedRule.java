@@ -26,15 +26,17 @@ abstract class AbstractUnusedRule extends AbstractRule
     }
 
     @Override
-    protected void applyRuleTo(Cage cage, GridState gridState)
+    protected boolean applyRuleTo(Cage cage, GridState gridState)
     {
         List<Square> squares = cage.getSquares();
         List<Set<Integer>> unusedValues = findUnusedValues(cage, gridState);
+        boolean change = false;
         for (int i = 0; i < unusedValues.size(); i++)
         {
             Set<Integer> unused = unusedValues.get(i);
             if (!unused.isEmpty())
             {
+                change = true;
                 Square square = squares.get(i);
                 if (!gridState.isSolved(square))
                 {
@@ -42,6 +44,7 @@ abstract class AbstractUnusedRule extends AbstractRule
                 }
             }
         }
+        return change;
     }
     
     // Package visibility for testing

@@ -14,6 +14,8 @@ import au.com.shawware.kenken.model.Cage;
 import au.com.shawware.kenken.model.Grid;
 import au.com.shawware.kenken.model.GridSpecification;
 import au.com.shawware.kenken.service.IKenKenSolver;
+import au.com.shawware.kenken.service.IKenKenSolverObserver;
+import au.com.shawware.kenken.service.NullKenKenSolverObserver;
 
 /**
  * Solves a KenKen puzzle by iterating over a set of rules.
@@ -23,6 +25,7 @@ import au.com.shawware.kenken.service.IKenKenSolver;
 public class RuleBasedSolver implements IKenKenSolver
 {
     private final RuleEngine ruleEngine;
+    private final IKenKenSolverObserver nullObserver;
 
     public RuleBasedSolver()
     {
@@ -30,6 +33,7 @@ public class RuleBasedSolver implements IKenKenSolver
                 buildBaseSolvingRules(),
                 buildExtraSolvingRules()
         );
+        nullObserver = new NullKenKenSolverObserver();
     }
 
     @SuppressWarnings("static-method")
@@ -62,11 +66,28 @@ public class RuleBasedSolver implements IKenKenSolver
     @Override
     public Grid solve(GridSpecification specification)
     {
+        return solve(specification, nullObserver);
+    }
+
+    @Override
+    public Grid solve(GridSpecification specification, IKenKenSolverObserver observer)
+    {
+        if (observer == null)
+        {
+            throw new IllegalArgumentException("Missing observer"); //$NON-NLS-1$
+        }
+
         final int gridSize = specification.getSize();
         final List<Cage> cages = specification.getCages();
 
-        GridState gridState = new GridState(gridSize, cages);
+        GridState gridState = new GridState(gridSize, cages, observer);
 
-        return ruleEngine.solve(gridSize, cages, gridState);
+        observer.start();
+        
+        Grid grid = ruleEngine.solve(gridSize, cages, gridState, observer);
+        
+        observer.finish(gridState.isSolved());
+        
+        return grid;
     }
 }

@@ -35,13 +35,13 @@ public class Cage
     protected static final String TYPE_COLUMN = "Column"; //$NON-NLS-1$
     protected static final String TYPE_COMBO  = "Combo";  //$NON-NLS-1$
     
+    private final String type;
     private final String operation;
     private final int value;
     private final List<Square> squares;
     private final int size;
     
     private int id;
-    private String type;
 
     @JsonCreator
     public Cage(
@@ -66,6 +66,11 @@ public class Cage
     public int getId()
     {
         return id;
+    }
+
+    public String getType()
+    {
+        return type;
     }
 
     public void setId(int id)

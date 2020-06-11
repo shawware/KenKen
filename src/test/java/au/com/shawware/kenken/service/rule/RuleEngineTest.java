@@ -21,6 +21,8 @@ import org.junit.Test;
 
 import au.com.shawware.kenken.AbstractBaseTest;
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.service.IKenKenSolverObserver;
+import au.com.shawware.kenken.service.NullKenKenSolverObserver;
 import au.com.shawware.util.StringUtil;
 
 import static au.com.shawware.kenken.model.Cage.EQUALS;
@@ -42,6 +44,7 @@ public class RuleEngineTest extends AbstractBaseTest
     private static ISolvingRule plusRule;
 
     private TallyRuleCounts counts;
+    private IKenKenSolverObserver observer;
 
     @BeforeClass
     public static void staticSetUp()
@@ -55,6 +58,7 @@ public class RuleEngineTest extends AbstractBaseTest
     public void setUp()
     {
         counts = new TallyRuleCounts();
+        observer = new NullKenKenSolverObserver();
     }
 
     private RuleEngine prepareRuleEngine(List<ISolvingRule> baseSolvingRules, List<ISolvingRule> extraSolvingRules)
@@ -74,14 +78,14 @@ public class RuleEngineTest extends AbstractBaseTest
               buildCage(PLUS, 3, new int[][] {{ 1, 0 }, { 1, 1 }})
         );
 
-        final GridState gridState = new GridState(gridSize, cages);
+        final GridState gridState = new GridState(gridSize, cages, observer);
 
         final RuleEngine ruleEngine = prepareRuleEngine(
                 asList(freebiesRule, plusRule),
                 asList(timesRule)
         );
 
-        ruleEngine.solve(gridSize, cages, gridState);
+        ruleEngine.solve(gridSize, cages, gridState, observer);
 
         assertEquals(2, counts.noChanges("Freebies"));
         assertEquals(2, counts.noChanges("Plus"));
@@ -104,14 +108,14 @@ public class RuleEngineTest extends AbstractBaseTest
               buildCage(TIMES,  4, new int[][] {{ 0, 1 }, { 1, 0 }, { 1, 1 }})
         );
 
-        final GridState gridState = new GridState(gridSize, cages);
+        final GridState gridState = new GridState(gridSize, cages, observer);
 
         final RuleEngine ruleEngine = prepareRuleEngine(
                 asList(freebiesRule, plusRule, timesRule),
                 Collections.emptyList()
         );
 
-        ruleEngine.solve(gridSize, cages, gridState);
+        ruleEngine.solve(gridSize, cages, gridState, observer);
 
         assertEquals(0, counts.noChanges("Freebies"));
         assertEquals(1, counts.noChanges("Plus"));
@@ -135,14 +139,14 @@ public class RuleEngineTest extends AbstractBaseTest
               buildCage(TIMES,  18, new int[][] {{ 0, 1 }, { 0, 2 }, { 1, 1 }})
         );
 
-        final GridState gridState = new GridState(gridSize, cages);
+        final GridState gridState = new GridState(gridSize, cages, observer);
 
         final RuleEngine ruleEngine = prepareRuleEngine(
                 asList(freebiesRule),
                 asList(timesRule)
         );
 
-        ruleEngine.solve(gridSize, cages, gridState);
+        ruleEngine.solve(gridSize, cages, gridState, observer);
 
         assertEquals(2, counts.noChanges("Freebies"));
         assertEquals(0, counts.noChanges("Plus"));

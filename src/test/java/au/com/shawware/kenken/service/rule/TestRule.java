@@ -28,9 +28,10 @@ public class TestRule extends AbstractRule
     }
 
     @Override
-    protected void applyRuleTo(Cage cage, GridState gridState)
+    protected boolean applyRuleTo(Cage cage, GridState gridState)
     {
         executionCount++;
+        return true;
     }
 
     int getExecutionCount()

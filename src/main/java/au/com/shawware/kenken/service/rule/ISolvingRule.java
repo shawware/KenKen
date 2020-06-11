@@ -10,6 +10,7 @@ package au.com.shawware.kenken.service.rule;
 import java.util.List;
 
 import au.com.shawware.kenken.model.Cage;
+import au.com.shawware.kenken.service.IKenKenSolverObserver;
 
 /**
  * The cage solving rule API.
@@ -29,15 +30,14 @@ public interface ISolvingRule
      * @param gridSize the grid's size
      * @param cages the grid's cages
      * @param gridState the current grid state
+     * @param observer the observer to report progress to
      */
-    void initialise(int gridSize, List<Cage> cages, GridState gridState);
+    void initialise(int gridSize, List<Cage> cages, GridState gridState, IKenKenSolverObserver observer);
 
     /**
      * Apply this rule to the given grid state - which is <em>updated</em> accordingly.
      *
      * @param gridState the current grid state
-     * 
-     * @return whether apply this rule changed the grid state
      */
     void applyTo(GridState gridState);
 }

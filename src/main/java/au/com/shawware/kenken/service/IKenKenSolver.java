@@ -18,4 +18,6 @@ import au.com.shawware.kenken.model.GridSpecification;
 public interface IKenKenSolver
 {
     Grid solve(GridSpecification specification);
+
+    Grid solve(GridSpecification specification, IKenKenSolverObserver observer);
 }
