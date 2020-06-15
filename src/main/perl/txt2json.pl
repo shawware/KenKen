@@ -28,6 +28,7 @@ while (<STDIN>) {
 
 	push(@cages, $cage);
 }
+$size++; # size is 1-indexed
 
 print("{\n");
 print("\t\"size\": $size,\n");
