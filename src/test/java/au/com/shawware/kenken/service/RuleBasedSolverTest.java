@@ -109,6 +109,12 @@ public class RuleBasedSolverTest extends AbstractBaseTest
         testProblem("kk-7x7-p1.json", "7432561,2761345,4317652,5243716,3654127,1576234,6125473");
     }
 
+    @Test
+    public void testProblem9() throws IOException
+    {
+        testProblem("kk-6x6-2020-06-13.json", "452613,615342,234561,541236,326154,163425");
+    }
+
     private void testProblem(String filename, String expectedSolution) throws IOException
     {
         GridSpecification specification = loadAndVerifyGridSpecification(filename);
